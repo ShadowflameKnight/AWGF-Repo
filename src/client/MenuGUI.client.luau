@@ -7,6 +7,8 @@ local tweenService = game:GetService("TweenService")
 local menuGUI = playerGUI:WaitForChild("MenuGUI")
 menuGUI.Enabled = true
 
+local mainMenuStorage = game.ReplicatedStorage.MainMenu
+
 local cam = workspace.CurrentCamera
 cam.CameraType = "Scriptable"
 
@@ -54,21 +56,78 @@ anywhere.Activated:Connect(function()
 end)
 
 ---SaveSlotScrolling-----------------
-for i, slot in ipairs(saveSlotScrolling:GetChildren()) do
-	if slot.Name == "SaveSlot" then
-		slot.Activated:Connect(function()
+local saveSlot = mainMenuStorage.UIElements.SaveSlot
+local giveSlotsAmount = mainMenuStorage.Remotes.GiveSlotAmount
+
+local updateSlotData = mainMenuStorage.Remotes.UpdateSlotData
+
+
+giveSlotsAmount.OnClientEvent:Connect(function(slotsOwned)
+	for i = 1, slotsOwned do
+		local slotClone = saveSlot:Clone()
+		slotClone.LayoutOrder = i
+		slotClone.Name = tostring(i)
+		slotClone.Parent = saveSlotScrolling
+		
+		local fetchSlotInformation = mainMenuStorage.Remotes.FetchSlotInformation
+		local mainMenuData = fetchSlotInformation:InvokeServer(i)
+		
+		if not mainMenuData.isEmpty then
+			slotClone.SlotName.Text = mainMenuData.saveName
+			slotClone.GameplayTime.Text = "Gameplay Time: "..mainMenuData.gameplayTime
+			slotClone.IsEmpty.Value = false
 			
-			confirmSound:Play()
-			for index, element in ipairs(slot:GetChildren()) do
-				if element:IsA("TextLabel") then
-					element.Visible = true
+			for _, element in ipairs(slotClone:GetChildren()) do
+				if element:IsA("TextLabel") or element:IsA("TextButton") then
 					if element.Name == "EmptySlotTextLabel" then
 						element.Visible = false
+					elseif element.Name == "SlotName" then
+						element.TextBox.Visible = false
+						element.Visible = true
+					else
+						element.Visible = true
 					end
 				end
 			end
-
-
-		end)
+		end
 	end
-end
+	
+	for i, slot in ipairs(saveSlotScrolling:GetChildren()) do
+		if slot:IsA("TextButton") then
+			slot.Activated:Connect(function()
+				confirmSound:Play()
+				if slot.IsEmpty.Value == true then
+					slot.Active = false
+					for index, element in ipairs(slot:GetChildren()) do
+						if element:IsA("BoolValue") then
+							continue
+						elseif element.Name == "EmptySlotTextLabel" then
+							element.Visible = false
+						else
+							element.Visible = true
+						end	
+					end 
+				else
+					print("Game start")
+				end
+			end)
+			
+			slot.SlotName.TextBox.FocusLost:Connect(function()
+				slot.IsEmpty.Value = false
+				slot.Active = true
+				slot.SlotName.TextBox.Visible = false
+				slot.SlotName.Text = slot.SlotName.TextBox.Text
+
+				local successSlotUpdate = updateSlotData:InvokeServer("Name", slot.Name, slot.SlotName.Text)
+			end) 
+			
+			slot.SlotName.Rename.Activated:Connect(function()
+				slot.SlotName.TextBox.Visible = true
+				slot.Active = false
+				slot.SlotName.TextBox.Text = ""
+				slot.SlotName.Text = ""
+			end)
+			
+		end
+	end
+end)
