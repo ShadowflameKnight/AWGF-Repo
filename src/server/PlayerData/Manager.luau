@@ -2,28 +2,32 @@ local module = {}
 
 module.Profiles = {}
 
-return module
+local TextService = game:GetService("TextService")
 
---[[
-function module.saveTorsoColor(player: Players, color)
-	local profile = module.Profiles[player]
-	if not profile then return end
-	profile.Data.torsoColors = {color.R, color.G, color.B}
-	print("Saved "..profile.Data.torsoColors[1], profile.Data.torsoColors[2], profile.Data.torsoColors[3])
-end
-
-function module.saveSetting(player: Player, setting, value)
-	local profile = module.Profiles[player]
-	if not profile then return end
-	profile.Data.gameSettings[setting] = value
-end
-
-function module.fillInMissingData(player: Player, data, value)
-	local profile = module.Profiles[player]
-	if not profile then return end
-	--If the data doesn't exist, fill it in
-	if profile.Data[data] == nil then
-		profile.Data[data] = value
+function module.newSlotName(player, slotName)
+	local success, result = pcall(function()
+		local filteredInstance = TextService:FilterStringAsync(slotName, player.UserId, Enum.TextFilterContext.PublicChat)
+		local filteredString = filteredInstance:GetNonChatStringForBroadcastAsync()
+		return filteredString
+	end)
+	local function isFiltered(inputText, filteredText)
+		return inputText ~= filteredText
 	end
+	print("Module")
+	print(result)
+	print(isFiltered(slotName, result))
+	if isFiltered(slotName, result) then return result end
+	
+
+	if result == "" then result = "The Facility" end
+	
+	local profile = module.Profiles[player]
+	if not profile then return end
+	
+	profile.Data.mainMenuData.saveName = result
+	profile.Data.mainMenuData.isEmpty = false
+	
+	return result	
 end
-]]
+
+return module
