@@ -5,7 +5,6 @@ GuiService.TouchControlsEnabled = false
 local tweenService = game:GetService("TweenService")
 
 local menuGUI = playerGUI:WaitForChild("MenuGUI")
-menuGUI.Enabled = true
 
 local mainMenuStorage = game.ReplicatedStorage.MainMenu
 
@@ -76,7 +75,7 @@ local function gameStart(slotNumber)
 	
 	local blackscreenClone = blackscreen:Clone()
 	blackscreenClone.Transparency = 1
-	blackscreenClone.Parent = miscGUI
+	blackscreenClone.Parent = playerGUI.LobbyGUI
 	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Transparency = 0})
 	tweenBlackscreen:Play()	
 	
@@ -93,7 +92,8 @@ local function gameStart(slotNumber)
 		local player = game.Players.LocalPlayer
 		player:Kick("Failed to initialize your save slot, please try again.")
 	else
-		menuGUI:Destroy()		
+		menuGUI:Destroy()	
+		script:Destroy()
 	end
 end
 

@@ -2,20 +2,7 @@ local Players = game:GetService("Players")
 
 local slotsOwned = 2
 
-local Template = {
-	mainMenuData = {
-		isEmpty = true,
-		saveName = "",
-		gameplayTime = 0
-	},
-	gameSettings = {
-		musicVolume = 1,
-		menuSoundsVolume = 1,
-	},
-	achievements = {
-		completedTutorial = false
-	},
-}
+local Template = require(script.Parent.Template)
 
 local ProfileService = require(game.ServerScriptService.Server.PlayerData.ProfileService)
 local Manager = require(script.Parent.Manager)
@@ -90,13 +77,12 @@ updateSlotData.OnServerInvoke = function(player, instruction, slotNumber, data1,
 	return false --Indicates the process has been successful
 end
 
+local giveSlotAmount = mainMenuFolder.Remotes.GiveSlotAmount
 local function PlayerAdded(player: Player)
 	if player == nil then
 		player:Kick("Player not found. Data cannot be gathered.")
 		return
 	end
-	
-	local giveSlotAmount = mainMenuFolder.Remotes.GiveSlotAmount
 	giveSlotAmount:FireClient(player, slotsOwned)
 end
 
@@ -121,8 +107,18 @@ end
 
 -------Everything after this is after the player starts a game--------------------
 local gameStartRemote = game.ReplicatedStorage.MainMenu.Remotes.GameStart
-
-
+local giveLobbyData = game.ReplicatedStorage.LobbyMenu.Remotes.GiveLobbyData
 gameStartRemote.OnServerInvoke = function(player, slotNumber)
-	loadProfile(player, slotNumber)
+	local profile = loadProfile(player, slotNumber)
+	local isEmpty = profile.Data.mainMenuData.isEmpty
+	local completedTutorial = profile.Data.achievements.completedTutorial
+	giveLobbyData:FireClient(player, isEmpty, completedTutorial)
+	print(profile.Data.mainMenuData.saveName)
+end
+
+
+local newSlotNameRemote = game.ReplicatedStorage.LobbyMenu.Remotes.NewSlotName
+newSlotNameRemote.OnServerInvoke = function(player, slotName)
+	local result = Manager.newSlotName(player, slotName)
+	return result
 end
