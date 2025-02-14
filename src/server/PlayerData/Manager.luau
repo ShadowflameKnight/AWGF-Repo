@@ -4,19 +4,13 @@ module.Profiles = {}
 
 local TextService = game:GetService("TextService")
 
+local filterModule = require(game.ServerScriptService.Server.Misc.FilterText)
+
 function module.newSlotName(player, slotName)
-	local success, result = pcall(function()
-		local filteredInstance = TextService:FilterStringAsync(slotName, player.UserId, Enum.TextFilterContext.PublicChat)
-		local filteredString = filteredInstance:GetNonChatStringForBroadcastAsync()
-		return filteredString
-	end)
-	local function isFiltered(inputText, filteredText)
-		return inputText ~= filteredText
-	end
-	print("Module")
-	print(result)
-	print(isFiltered(slotName, result))
-	if isFiltered(slotName, result) then return result end
+	
+	local isFiltered, result = filterModule.filterText(player, slotName)
+	
+	if isFiltered then return result end
 	
 
 	if result == "" then result = "The Facility" end

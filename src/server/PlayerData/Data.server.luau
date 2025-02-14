@@ -66,12 +66,10 @@ updateSlotData.OnServerInvoke = function(player, instruction, slotNumber, data1,
 	local profile = loadProfile(player, slotNumber)
 	local mainMenuData = profile.Data.mainMenuData
 	if instruction == "Name" then
-		mainMenuData.isEmpty = false
-		mainMenuData.saveName = data1
+		local result = Manager.newSlotName(player, data1)
 		profile:Release()
-		return true
+		return result
 	end
-
 
 	profile:Release()
 	return false --Indicates the process has been successful

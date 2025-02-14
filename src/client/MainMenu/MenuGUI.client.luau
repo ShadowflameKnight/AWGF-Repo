@@ -165,9 +165,10 @@ giveSlotsAmount.OnClientEvent:Connect(function(slotsOwned)
 					slot.IsEmpty.Value = false
 					slot.Active = true
 					slot.SlotName.TextBox.Visible = false
-					slot.SlotName.Text = slot.SlotName.TextBox.Text
+					--slot.SlotName.Text = slot.SlotName.TextBox.Text
 
-					local successSlotUpdate = updateSlotData:InvokeServer("Name", slot.Name, slot.SlotName.Text)
+					local result = updateSlotData:InvokeServer("Name", slot.Name, slot.SlotName.TextBox.Text)
+					slot.SlotName.Text = tostring(result)
 				end
 				miniLoadingClone:Destroy()
 				confirmSound:Play()
