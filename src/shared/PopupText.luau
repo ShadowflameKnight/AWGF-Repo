@@ -1,15 +1,17 @@
 local tweenService = game:GetService("TweenService")
 
+local textPopupGUI = game.ReplicatedStorage.Misc.UIElements.TextPopupGUI
+
 local module = {}
 
 --textType refers to whether it is a warning, neutral, etc
 function module.popUpText(player, text, textType)
-	local textPopupGUI = game.ReplicatedStorage.Misc.UIElements.TextPopupGUI
 	local textPopupGUIClone = textPopupGUI:Clone()
 	local textPopupFrame = textPopupGUIClone.TextPopupFrame
 	
 	local textPopupBackground = textPopupFrame.Background
 	local textPopupText = textPopupFrame.TextLabel
+	
 	textPopupText.Text = text
 
 	textPopupGUIClone.Parent = player.PlayerGui
@@ -25,6 +27,8 @@ function module.popUpText(player, text, textType)
 	fadeOutText.Completed:Connect(function()
 		textPopupGUIClone:Destroy()
 	end)
+	fadeOutText.Completed:Wait()
+	return
 end
 
 return module

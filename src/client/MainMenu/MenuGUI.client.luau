@@ -11,6 +11,11 @@ local mainMenuStorage = game.ReplicatedStorage.MainMenu
 local miscStorage = game.ReplicatedStorage.Misc
 local miniLoadingScreen = miscStorage.UIElements.MiniLoadingScreenGUI
 
+---Load the main menu room------------------
+local mainMenuLoader = require(game.StarterPlayer.StarterPlayerScripts.Client.MainMenu.MainMenuLoader)
+mainMenuLoader.loadLobby()
+
+---Camera-----------
 local cam = workspace.CurrentCamera
 cam.CameraType = "Scriptable"
 
@@ -25,14 +30,15 @@ local cameraCFrame = CFrame.new(pos, Vector3.new(basePos.X, basePos.Y, basePos.Z
 cam.FieldOfView = 70
 cam.CFrame = cameraCFrame
 
-
-
 -----Sound Stuff---------------
 local soundService = game:WaitForChild("SoundService")
 local menuSounds = soundService.MenuSounds
 local confirmSound = menuSounds.ConfirmSound
 --------------------------------
 
+---Initializing lighting-----------
+local lightingConfig = require(game.StarterPlayer.StarterPlayerScripts.Client.Misc.LightingConfig)
+lightingConfig.changeLighting("mainMenu")
 
 ---"Click anywhere to continue"--------------------------------------------------------
 local gameTitle = menuGUI.GameTitle
@@ -46,6 +52,7 @@ tweenContinueText:Play()
 local blur = game.Lighting.Blur
 local anywhere = menuGUI.Anywhere
 local saveSlotScrolling = menuGUI.SaveSlotScrolling
+
 anywhere.Activated:Connect(function()
 	blur.Enabled = true
 	blur.Size = 0
@@ -92,6 +99,7 @@ local function gameStart(slotNumber)
 		local player = game.Players.LocalPlayer
 		player:Kick("Failed to initialize your save slot, please try again.")
 	else
+		mainMenuLoader.closeMainMenu()
 		menuGUI:Destroy()	
 		script:Destroy()
 	end
