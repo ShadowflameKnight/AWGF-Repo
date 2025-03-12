@@ -23,7 +23,7 @@ local CAMERA_DEPTH = 15
 local LENGTH_OFFSET = 0
 
 local camera = workspace.CurrentCamera
-camera.CameraType = "Scriptable"
+camera.CameraType = "Custom"
 --a variable that represents the location of the camera
 
 camera.FieldOfView = 70
@@ -31,6 +31,18 @@ camera.FieldOfView = 70
 
 
 local character = player.Character
+
+local cameraPart = Instance.new("Part")
+cameraPart.Name = "CameraPart"
+cameraPart.Parent = workspace
+cameraPart.Anchored = true
+cameraPart.CanCollide = false
+--cameraPart.Transparency = 1
+
+RunService.RenderStepped:Connect(function(deltaTime)
+	
+end)
+
 
 local function updateCamera()
 	--This holds the logic needed to get and set a new position for the camera.
@@ -42,8 +54,8 @@ local function updateCamera()
 			local root = character:FindFirstChild("HumanoidRootPart")
 			-- finds the root part of the humanoid, which is the torso
 			if root then
-
-				
+				local goalCFrame = character.HumanoidRootPart.CFrame + Vector3.new(-25, 10, 0)
+				cameraPart.CFrame = cameraPart.CFrame:Lerp(goalCFrame, 0.1)
 					--print("forward")
 					--print(forwardRaycastResult.Instance)
 					--print("backwards")
@@ -52,12 +64,12 @@ local function updateCamera()
 				
 				--if not forwardRaycastResult --[[and not backwardsRaycastResult]] then
 					-- checks if it finds the root successfully, deters if the root either didn't load or it isn't the root we're looking for.
-				local rootPosition = root.Position + Vector3.new(LENGTH_OFFSET, HEIGHT_OFFSET, 0)
+				local rootPosition = root.Position + Vector3.new(cameraPart.Position.X + 5, cameraPart.Position.Y, cameraPart.Position.Z)
 				-- the base position of camera. The vector is basically just the coordinates.
-				local cameraPosition = Vector3.new(rootPosition.X, rootPosition.Y, CAMERA_DEPTH)
+				local cameraPosition = Vector3.new(cameraPart.Position.X, cameraPart.Position.Y, cameraPart.Position.Z)
 				-- Sets the camera position. Includes camera depth, which is how far the camera is away in terms of the z axis
 				--Also includes a constantly updating position for the x and y axis
-				camera.CFrame = CFrame.lookAt(cameraPosition, rootPosition)
+				camera.CFrame = CFrame.new(cameraPosition, character.HumanoidRootPart.Position)
 				--Using Cframe.lookAt, update the camera position
 					
 					
@@ -98,7 +110,7 @@ local module = {}
 function module.startGameplay(gamemode)
 	print("Yep")
 	lightingConfig.changeLighting(gamemode)
-	--RunService:BindToRenderStep("SidescrollingCamera", Enum.RenderPriority.Camera.Value + 1, updateCamera)
+	RunService:BindToRenderStep("SidescrollingCamera", Enum.RenderPriority.Camera.Value + 1, updateCamera)
 	--BindToRenderStep means that this functino is constantly running every frame
 	--Enum.RenderPriority.Camera.Value means that this process is first priority among other every-frame process, besides gate setup (hence, the + 1).
 	--updateCamera is the function called every frame.
