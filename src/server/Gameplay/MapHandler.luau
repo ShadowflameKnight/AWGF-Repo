@@ -42,8 +42,6 @@ function rooms.loadMap(map)
     for i = 1, 20 do
         --Changing and saving the starting room with a variable. Then, passing the starter room to the function that determines the new room
        prevRoom, horizontalDirection, verticleDirection = rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDirection)
-
-       
     end
 end
 

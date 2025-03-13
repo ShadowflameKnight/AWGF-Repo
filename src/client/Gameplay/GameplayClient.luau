@@ -1,27 +1,17 @@
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local startGameplayBindable = replicatedStorage.LobbyMenu.Remotes.StartExpeditionBindable
-local lightingConfig = require(game.StarterPlayer.StarterPlayerScripts.Client.Misc.LightingConfig)
 
 local replicatedStorage = game:GetService("ReplicatedStorage")
 
---The purpose of this code is to make a 2D Sidescrolling system.
-
 local Players = game:GetService("Players")
--- obtains the service Players from the data model (the game)
-
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
---Accesses Local player to access the client's camera
 local mouse = player:GetMouse()
-
 
 local character = player.Character
 
-
-
 local tweenService = game:GetService("TweenService")
-local player = game.Players.LocalPlayer
 
 local replicatedStorage = game.ReplicatedStorage
 local lobbyMenuStorage = replicatedStorage.LobbyMenu
@@ -30,10 +20,9 @@ local playerGUI = game.Players.LocalPlayer.PlayerGui
 local lobbyGUI = playerGUI:WaitForChild("LobbyGUI")
 local miscGUI = playerGUI:WaitForChild("MiscGUI")
 
-local giveLobbyDataRemote = replicatedStorage.LobbyMenu.Remotes.GiveLobbyData
-
 local textPopUpModule = require(game.ReplicatedStorage.Shared.PopupText)
 local cameraModule = require(script.Parent.CameraModule)
+local lightingConfig = require(game.StarterPlayer.StarterPlayerScripts.Client.Misc.LightingConfig)
 
 local soundService = game.SoundService
 local menuSounds = soundService.MenuSounds
@@ -45,8 +34,13 @@ local uiButtonClickSound = menuSounds.UIButtonClick
 local module = {}
 
 function module.startGameplay(gamemode)
-	print("Yep")
+	local mapLoadedRemote = replicatedStorage.Gameplay.Traveling.MapLoaded
+	mapLoadedRemote.OnClientEvent:Connect(function()
+		player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
+	end)
+
 	lightingConfig.changeLighting(gamemode)
+
 	local GuiService = game:GetService("GuiService") 
 	GuiService.TouchControlsEnabled = false
 	

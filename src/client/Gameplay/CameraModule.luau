@@ -32,10 +32,8 @@ function module.travelingCamera()
 			if character then
 				local root = character:FindFirstChild("HumanoidRootPart")
 				-- finds the root part of the humanoid, which is the torso
-				if root then
-					local goalCFrame = character.HumanoidRootPart.CFrame + Vector3.new(-25, 30, 25)
-					
-					cameraPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + Vector3.new(-25, 30, 25), character.HumanoidRootPart.Position)
+				if root then			
+					cameraPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + Vector3.new(-15, 25, 15), character.HumanoidRootPart.Position)
 	
 	
 					local maxTilt = 10
