@@ -14,8 +14,8 @@ function rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDire
     repeat 
         randomRoom = possibleRooms[math.random(1,#possibleRooms)]:Clone() 
     until 
-        --1 value = 45 degrees in the main direction. Main direction for horizontal is right, and up for verticle.
-        randomRoom.HorizontalDirection.Value + horizontalDirection <= 2 and randomRoom.HorizontalDirection.Value + horizontalDirection >= -2 and randomRoom.VerticleDirection.Value + verticleDirection <= 1 and randomRoom.VerticleDirection.Value + verticleDirection >= -1
+        --1 value = 90 degrees in the main direction. Main direction for horizontal is right, and up for verticle.
+        randomRoom.HorizontalDirection.Value + horizontalDirection <= 1 and randomRoom.HorizontalDirection.Value + horizontalDirection >= -1 and randomRoom.VerticleDirection.Value + verticleDirection <= 1 and randomRoom.VerticleDirection.Value + verticleDirection >= -1
 
     horizontalDirection += randomRoom.HorizontalDirection.Value
     verticleDirection += randomRoom.VerticleDirection.Value
