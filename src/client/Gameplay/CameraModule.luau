@@ -25,28 +25,36 @@ function module.travelingCamera()
 	
 	local root = character:WaitForChild("HumanoidRootPart")
 	
+	local cameraDistanceFactor = 0
+	mouse.WheelForward:Connect(function()
+		if cameraDistanceFactor >= -5 then
+			cameraDistanceFactor -= 2
+		end
+	end)
+
+	mouse.WheelBackward:Connect(function()
+		if cameraDistanceFactor <= 10 then
+			cameraDistanceFactor += 2
+		end
+	end)
+
 	runService:BindToRenderStep("SidescrollingCamera", Enum.RenderPriority.Camera.Value + 1, function()
 		if character then
-			-- Checks if the  character model exists yet so the program doesn't explode
 			local character = player.Character
 			if character then
 				local root = character:FindFirstChild("HumanoidRootPart")
 				-- finds the root part of the humanoid, which is the torso
 				if root then			
-					cameraPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + Vector3.new(-15, 25, 15), character.HumanoidRootPart.Position)
+					--Adjust constant numbers manually to change the camera position in third person mode. 
+					cameraPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + Vector3.new(-15 - cameraDistanceFactor, 25 + cameraDistanceFactor, 15 + cameraDistanceFactor), character.HumanoidRootPart.Position)
 	
-	
+					-- Adjust maxTilt to change how much the camera will tilt by (Default: 10)
 					local maxTilt = 10
 					camera.CFrame = cameraPart.CFrame * CFrame.Angles(
 						math.rad((((mouse.Y - mouse.ViewSizeY / 2) / mouse.ViewSizeY)) * -maxTilt),
 						math.rad((((mouse.X - mouse.ViewSizeX / 2) / mouse.ViewSizeX)) * -maxTilt),
 						0
-				  )
-					--Using Cframe.lookAt, update the camera position
-						
-						
-					
-					
+				  )			
 				end
 			end
 		end
