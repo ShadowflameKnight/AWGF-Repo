@@ -5,6 +5,7 @@ GuiService.TouchControlsEnabled = false
 local tweenService = game:GetService("TweenService")
 
 local menuGUI = playerGUI:WaitForChild("MenuGUI")
+menuGUI.Enabled = true
 
 local mainMenuStorage = game.ReplicatedStorage.MainMenu
 
@@ -82,7 +83,7 @@ local function gameStart(slotNumber)
 	
 	local blackscreenClone = blackscreen:Clone()
 	blackscreenClone.Transparency = 1
-	blackscreenClone.Parent = playerGUI.LobbyGUI
+	blackscreenClone.Parent = playerGUI.MiscGUI
 	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Transparency = 0})
 	tweenBlackscreen:Play()	
 	

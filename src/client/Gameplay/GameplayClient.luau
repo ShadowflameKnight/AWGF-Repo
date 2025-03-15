@@ -1,17 +1,17 @@
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local startGameplayBindable = replicatedStorage.LobbyMenu.Remotes.StartExpeditionBindable
 
-local replicatedStorage = game:GetService("ReplicatedStorage")
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
+local character = player.Character
 local mouse = player:GetMouse()
 
-local character = player.Character
+local camera = workspace.CurrentCamera
 
 local tweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local replicatedStorage = game.ReplicatedStorage
 local lobbyMenuStorage = replicatedStorage.LobbyMenu
@@ -28,6 +28,7 @@ local soundService = game.SoundService
 local menuSounds = soundService.MenuSounds
 local music = soundService.Music
 local menusSounds = soundService.MenuSounds
+local soundEffects = soundService.SoundEffects
 
 local uiButtonClickSound = menuSounds.UIButtonClick
 
@@ -39,14 +40,51 @@ function module.startGameplay(gamemode)
 		player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
 	end)
 
+	--Change lighting to the specified things under the module script
 	lightingConfig.changeLighting(gamemode)
 
+	--Re enabling mobile controls
 	local GuiService = game:GetService("GuiService") 
-	GuiService.TouchControlsEnabled = false
+	GuiService.TouchControlsEnabled = true
 	
+	--Setting camera
 	cameraModule.travelingCamera()
 
-	local blackscreenClone = lobbyGUI:FindFirstChild("BlackScreen")
+	--Sprinting
+	UserInputService.InputBegan:Connect(function(input)
+		if input.KeyCode == Enum.KeyCode.LeftShift then
+			character.Humanoid.WalkSpeed = 32	
+		end
+	end)
+	UserInputService.InputEnded:Connect(function(input)
+		if input.KeyCode == Enum.KeyCode.LeftShift then
+			character.Humanoid.WalkSpeed = 16
+		end
+	end)
+
+	local openDoorRemote = game.ReplicatedStorage.Gameplay.Traveling.OpenDoor
+	openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMapLayout)
+
+		local nextRoom = mapLayout[placeInMapLayout + 1]
+        local nextRoomEntranceDoor = nextRoom.EntranceWall.Door
+        local currentRoomExitDoor = roomInstance.ExitWall.Door
+
+        local tweenEntranceRightDoor = tweenService:Create(nextRoomEntranceDoor.RightDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = nextRoomEntranceDoor.EndpointRight.CFrame})
+		tweenEntranceRightDoor:Play()
+        local tweenLeftDoor = tweenService:Create(nextRoomEntranceDoor.LeftDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = nextRoomEntranceDoor.EndpointLeft.CFrame})
+        tweenLeftDoor:Play()
+
+        local tweenExitRightDoor = tweenService:Create(currentRoomExitDoor.RightDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = currentRoomExitDoor.EndpointRight.CFrame})
+		tweenExitRightDoor:Play()
+        local tweenExitLeftDoor = tweenService:Create(currentRoomExitDoor.LeftDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = currentRoomExitDoor.EndpointLeft.CFrame})
+        tweenExitLeftDoor:Play()
+
+		local prompt = roomInstance.ExitWall.Door.ProxPart.ProximityPrompt
+        prompt.Parent:Destroy()
+		soundEffects.MetalDoorOpening:Play()
+	end)
+
+	local blackscreenClone = miscGUI:FindFirstChild("BlackScreen")
 	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.new(-1, 0)})
 	tweenBlackscreen:Play()	
 

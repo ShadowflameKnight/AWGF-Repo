@@ -1,9 +1,27 @@
 local Workspace = game:GetService("Workspace")
 local mapsFolder = game.ServerStorage.Maps
 
+local tweenService = game:GetService("TweenService")
+
 local rooms = {}
 
 local mapLayout = {}
+
+local openDoorRemote = game.ReplicatedStorage.Gameplay.Traveling.OpenDoor
+local function exitPrompt(roomInstance)
+    --Stores where in the room order the current room is in, so that it may open the door for the next room in the list
+    local placeInMapLayout = table.find(mapLayout, roomInstance)
+
+    local prompt = roomInstance.ExitWall.Door.ProxPart.ProximityPrompt
+
+    prompt.Triggered:Connect(function()
+        openDoorRemote:FireAllClients(mapLayout, roomInstance, placeInMapLayout) 
+
+      
+
+        
+    end)
+end
 
 function rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDirection)
     --Look for the possible rooms that are in the generation pool
@@ -33,6 +51,9 @@ end
 function rooms.loadMap(map)
     --Generate starting room
     local starterRoom = mapsFolder[map].StartingRoom:Clone()
+    table.insert(mapLayout, starterRoom)
+
+
     starterRoom.Parent = Workspace
 
 	---Keeping track of previous room, starting with the starter room
@@ -42,6 +63,9 @@ function rooms.loadMap(map)
     for i = 1, 20 do
         --Changing and saving the starting room with a variable. Then, passing the starter room to the function that determines the new room
        prevRoom, horizontalDirection, verticleDirection = rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDirection)
+    end
+    for i, roomInstance in mapLayout do
+        exitPrompt(roomInstance)
     end
 end
 

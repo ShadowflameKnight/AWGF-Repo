@@ -45,6 +45,12 @@ function module.travelingCamera()
 				local root = character:FindFirstChild("HumanoidRootPart")
 				-- finds the root part of the humanoid, which is the torso
 				if root then			
+					local rootPos, mousePos = root.Position, mouse.Hit.Position
+
+					root.CFrame = CFrame.new(rootPos, Vector3.new(mousePos.X, rootPos.Y, mousePos.Z))
+
+
+
 					--Adjust constant numbers manually to change the camera position in third person mode. 
 					cameraPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + Vector3.new(-15 - cameraDistanceFactor, 25 + cameraDistanceFactor, 15 + cameraDistanceFactor), character.HumanoidRootPart.Position)
 	
@@ -61,6 +67,8 @@ function module.travelingCamera()
 	end)
 end
 
+function module.travelingCamera()
 
+end
 
 return module
