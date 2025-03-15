@@ -1,4 +1,5 @@
 local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
 
 local character = game.Players.LocalPlayer.Character
 local camera = workspace.CurrentCamera
@@ -38,7 +39,7 @@ function module.travelingCamera()
 		end
 	end)
 
-	runService:BindToRenderStep("SidescrollingCamera", Enum.RenderPriority.Camera.Value + 1, function()
+	runService:BindToRenderStep("TravelingCamera", Enum.RenderPriority.Camera.Value + 1, function()
 		if character then
 			local character = player.Character
 			if character then
@@ -67,8 +68,12 @@ function module.travelingCamera()
 	end)
 end
 
-function module.travelingCamera()
+function module.travelingEvent(roomInstance)
+	runService:UnbindFromRenderStep("TravelingCamera")
+	local cameraFocus = roomInstance.CameraFocus
 
+	local tweenCamera = tweenService:Create(camera, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {CFrame = CFrame.new(cameraFocus.Position + Vector3.new(-15, 25, 15), cameraFocus.Position)})
+	tweenCamera:Play()
 end
 
 return module

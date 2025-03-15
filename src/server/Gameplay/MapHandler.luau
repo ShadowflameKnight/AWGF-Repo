@@ -1,3 +1,4 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local mapsFolder = game.ServerStorage.Maps
 
@@ -15,11 +16,19 @@ local function exitPrompt(roomInstance)
     local prompt = roomInstance.ExitWall.Door.ProxPart.ProximityPrompt
 
     prompt.Triggered:Connect(function()
-        openDoorRemote:FireAllClients(mapLayout, roomInstance, placeInMapLayout) 
+        openDoorRemote:FireAllClients(mapLayout, roomInstance, placeInMapLayout)  
+    end)
+end
 
-      
+local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
+local function travelingEvent(roomInstance)
+    roomInstance.EventTrigger.Touched:Connect(function(basePart)
+        local partParent = basePart.Parent
+        local humanoid = partParent:FindFirstChild("Humanoid")
 
-        
+        if humanoid then
+            triggerEventRemote:FireAllClients(roomInstance)
+        end
     end)
 end
 
@@ -66,6 +75,10 @@ function rooms.loadMap(map)
     end
     for i, roomInstance in mapLayout do
         exitPrompt(roomInstance)
+        if roomInstance:FindFirstChild("EventTrigger") then
+            travelingEvent(roomInstance)
+        end
+        
     end
 end
 

@@ -35,6 +35,7 @@ local uiButtonClickSound = menuSounds.UIButtonClick
 local module = {}
 
 function module.startGameplay(gamemode)
+
 	local mapLoadedRemote = replicatedStorage.Gameplay.Traveling.MapLoaded
 	mapLoadedRemote.OnClientEvent:Connect(function()
 		player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
@@ -51,20 +52,34 @@ function module.startGameplay(gamemode)
 	cameraModule.travelingCamera()
 
 	--Sprinting
+	local canMove = true
 	UserInputService.InputBegan:Connect(function(input)
-		if input.KeyCode == Enum.KeyCode.LeftShift then
-			character.Humanoid.WalkSpeed = 32	
+		if canMove then
+			if input.KeyCode == Enum.KeyCode.LeftShift then
+				character.Humanoid.WalkSpeed = 32	
+			end
 		end
 	end)
 	UserInputService.InputEnded:Connect(function(input)
-		if input.KeyCode == Enum.KeyCode.LeftShift then
-			character.Humanoid.WalkSpeed = 16
+		if canMove then
+			if input.KeyCode == Enum.KeyCode.LeftShift then
+				character.Humanoid.WalkSpeed = 16
+			end
 		end
 	end)
 
+	--When player touches an event trigger brick when traveling
+	local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
+	triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
+		cameraModule.travelingEvent(roomInstance)
+		canMove = false
+		character.Humanoid.WalkSpeed = 0
+	end)
+
+
+	--Tweening and handling for when the player opens a door.
 	local openDoorRemote = game.ReplicatedStorage.Gameplay.Traveling.OpenDoor
 	openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMapLayout)
-
 		local nextRoom = mapLayout[placeInMapLayout + 1]
         local nextRoomEntranceDoor = nextRoom.EntranceWall.Door
         local currentRoomExitDoor = roomInstance.ExitWall.Door
