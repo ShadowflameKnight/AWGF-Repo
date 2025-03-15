@@ -68,11 +68,12 @@ function module.travelingCamera()
 	end)
 end
 
+--Moves the camera to the CameraFocus part during a room event.
 function module.travelingEvent(roomInstance)
 	runService:UnbindFromRenderStep("TravelingCamera")
 	local cameraFocus = roomInstance.CameraFocus
 
-	local tweenCamera = tweenService:Create(camera, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {CFrame = CFrame.new(cameraFocus.Position + Vector3.new(-15, 25, 15), cameraFocus.Position)})
+	local tweenCamera = tweenService:Create(camera, TweenInfo.new(2, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {CFrame = CFrame.new(cameraFocus.Position + Vector3.new(-15, 25, 15), cameraFocus.Position)})
 	tweenCamera:Play()
 end
 

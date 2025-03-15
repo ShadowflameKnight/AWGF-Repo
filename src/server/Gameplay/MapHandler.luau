@@ -28,6 +28,7 @@ local function travelingEvent(roomInstance)
 
         if humanoid then
             triggerEventRemote:FireAllClients(roomInstance)
+            roomInstance.EventTrigger:Destroy()
         end
     end)
 end
@@ -73,6 +74,8 @@ function rooms.loadMap(map)
         --Changing and saving the starting room with a variable. Then, passing the starter room to the function that determines the new room
        prevRoom, horizontalDirection, verticleDirection = rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDirection)
     end
+
+    --Apply functionality to rooms after they have loaded
     for i, roomInstance in mapLayout do
         exitPrompt(roomInstance)
         if roomInstance:FindFirstChild("EventTrigger") then
