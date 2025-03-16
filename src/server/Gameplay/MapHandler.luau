@@ -39,7 +39,7 @@ local roomSinceLastEncounter = 0
 local eventList = {
     ["Encounter"] = 50,
     ["Curio"]  = 30,
-    [""] = 0
+    [""] = 20
 }
 function rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDirection)
     --Look for the possible rooms that are in the generation pool
