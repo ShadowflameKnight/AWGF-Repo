@@ -32,6 +32,10 @@ local soundEffects = soundService.SoundEffects
 
 local uiButtonClickSound = menuSounds.UIButtonClick
 
+local gameplayGUI = playerGUI.GameplayGUI
+local travelGUI = gameplayGUI.TravelGUI
+local eventButton = travelGUI.EventButton
+
 local module = {}
 
 function module.startGameplay(gamemode)
@@ -74,6 +78,10 @@ function module.startGameplay(gamemode)
 		cameraModule.travelingEvent(roomInstance)
 		canMove = false
 		character.Humanoid.WalkSpeed = 0
+
+		-- Doing GUI stuff
+		task.wait(2)
+		eventButton.Visible = true
 	end)
 
 
@@ -98,6 +106,8 @@ function module.startGameplay(gamemode)
         prompt.Parent:Destroy()
 		soundEffects.MetalDoorOpening:Play()
 	end)
+
+	gameplayGUI.Enabled = true
 
 	local blackscreenClone = miscGUI:FindFirstChild("BlackScreen")
 	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.new(-1, 0)})

@@ -20,6 +20,7 @@ local function exitPrompt(roomInstance)
     end)
 end
 
+--For when the player triggers an event
 local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
 local function travelingEvent(roomInstance)
     roomInstance.EventTrigger.Touched:Connect(function(basePart)
@@ -27,41 +28,37 @@ local function travelingEvent(roomInstance)
         local humanoid = partParent:FindFirstChild("Humanoid")
 
         if humanoid then
-            triggerEventRemote:FireAllClients(roomInstance)
             roomInstance.EventTrigger:Destroy()
+            -- Sent to GameplayClient
+            triggerEventRemote:FireAllClients(roomInstance)
+            
         end
     end)
 end
 
-local roomSinceLastEncounter = 0
-
 --Keyword is the event name. Its number associated with it is the % chance it has of happening.
 local eventList = {
-    ["Encounter"] = 50,
-    ["Curio"]  = 30,
-    [""] = 20
+    ["Encounter"] = 30,
+    ["Curio"]  = 20,
+    [""] = 50
 }
+
+local roomSinceLastEncounter = 0
 function rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDirection)
     --Look for the possible rooms that are in the generation pool
     local possibleRooms = mapsFolder[map].PossibleRooms:GetChildren()
 	local randomRoom = possibleRooms[math.random(1,#possibleRooms)]:Clone()
 
-    --Ensure the rooms aren't generating in such a way where it could potentially be pointing backwards
-    repeat 
-        randomRoom = possibleRooms[math.random(1,#possibleRooms)]:Clone() 
-    until 
-        --1 value = 90 degrees in the main direction. Main direction for horizontal is right, and up for verticle.
-        randomRoom.HorizontalDirection.Value + horizontalDirection <= 1 and randomRoom.HorizontalDirection.Value + horizontalDirection >= -1 and randomRoom.VerticleDirection.Value + verticleDirection <= 1 and randomRoom.VerticleDirection.Value + verticleDirection >= -1
-
     --Determine whether the room has an event in it. Then, determine the event.
     local roomEvent = ""
-    print(roomSinceLastEncounter <= 2)
-    if roomSinceLastEncounter <= 2 then
-        local randomNumber = math.random(1,100)
+    if roomSinceLastEncounter < 5 then
+        local randomNumber = math.random(1, 100)
         local counter = 0
         for event, weight in eventList do
             counter += weight
             if randomNumber <= counter then
+                if roomSinceLastEncounter == 0 then roomSinceLastEncounter += 1 continue end --Ensures that the player doesn't do 2 encounters in a row.
+
                 roomEvent = event
                 randomRoom.Event.Value = roomEvent
                 
