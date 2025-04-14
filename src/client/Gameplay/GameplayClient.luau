@@ -31,10 +31,11 @@ local menusSounds = soundService.MenuSounds
 local soundEffects = soundService.SoundEffects
 
 local uiButtonClickSound = menuSounds.UIButtonClick
+local eventSound = soundEffects.EventSound
 
 local gameplayGUI = playerGUI.GameplayGUI
 local travelGUI = gameplayGUI.TravelGUI
-local eventButton = travelGUI.EventButton
+local eventGUI = gameplayGUI.EventGUI
 
 local module = {}
 
@@ -75,15 +76,36 @@ function module.startGameplay(gamemode)
 	--When player touches an event trigger brick when traveling
 	local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
 	triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
+		local backgroundFade = eventGUI.BackgroundFade
+		local effectDisplay = eventGUI.EffectDisplay
+
+		backgroundFade.BackgroundTransparency = 1
+		effectDisplay.Position = UDim2.fromScale(0.5, 1)
+	
+		local sprawlBattle = soundService.Music.SprawlBattle
+		sprawlBattle.Volume = 0.25
+		sprawlBattle:Play()
+
+		eventSound:Play()
+		
 		cameraModule.travelingEvent(roomInstance)
 		canMove = false
 		character.Humanoid.WalkSpeed = 0
 
 		-- Doing GUI stuff
 		task.wait(2)
-		eventButton.Visible = true
-	end)
+		travelGUI.Enabled = false
+		eventGUI.Enabled = true
 
+		local musicTween = tweenService:Create(sprawlBattle, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Volume = 0.5})
+		musicTween:Play()
+
+		local backgroundFadeTween = tweenService:Create(backgroundFade, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundTransparency = 0.3})
+		backgroundFadeTween:Play()
+
+		local effectDisplayTween = tweenService:Create(effectDisplay, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0.5, 0.8)})
+		effectDisplayTween:Play()
+	end)
 
 	--Tweening and handling for when the player opens a door.
 	local openDoorRemote = game.ReplicatedStorage.Gameplay.Traveling.OpenDoor
@@ -108,9 +130,10 @@ function module.startGameplay(gamemode)
 	end)
 
 	gameplayGUI.Enabled = true
+	travelGUI.Enabled = true
 
 	local blackscreenClone = miscGUI:FindFirstChild("BlackScreen")
-	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.new(-1, 0)})
+	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(-1, 0)})
 	tweenBlackscreen:Play()	
 
 	local loadingScreenWoosh = menuSounds.LoadingScreenWoosh
