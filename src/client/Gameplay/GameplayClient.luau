@@ -39,6 +39,13 @@ local eventGUI = gameplayGUI.EventGUI
 
 local module = {}
 
+local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
+local sprawlBattle = soundService.Music.SprawlBattle
+local musicTween = tweenService:Create(sprawlBattle, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Volume = 0.5})
+local backgroundFade = eventGUI.BackgroundFade
+local effectDisplay = eventGUI.EffectDisplay
+local backgroundFadeTween = tweenService:Create(backgroundFade, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundTransparency = 0.3})
+local effectDisplayTween = tweenService:Create(effectDisplay, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0.5, 0.8)})
 function module.startGameplay(gamemode)
 
 	local mapLoadedRemote = replicatedStorage.Gameplay.Traveling.MapLoaded
@@ -74,15 +81,10 @@ function module.startGameplay(gamemode)
 	end)
 
 	--When player touches an event trigger brick when traveling
-	local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
 	triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
-		local backgroundFade = eventGUI.BackgroundFade
-		local effectDisplay = eventGUI.EffectDisplay
-
 		backgroundFade.BackgroundTransparency = 1
 		effectDisplay.Position = UDim2.fromScale(0.5, 1)
-	
-		local sprawlBattle = soundService.Music.SprawlBattle
+		
 		sprawlBattle.Volume = 0.25
 		sprawlBattle:Play()
 
@@ -96,14 +98,11 @@ function module.startGameplay(gamemode)
 		task.wait(2)
 		travelGUI.Enabled = false
 		eventGUI.Enabled = true
-
-		local musicTween = tweenService:Create(sprawlBattle, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Volume = 0.5})
+		
 		musicTween:Play()
-
-		local backgroundFadeTween = tweenService:Create(backgroundFade, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundTransparency = 0.3})
+		
 		backgroundFadeTween:Play()
-
-		local effectDisplayTween = tweenService:Create(effectDisplay, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0.5, 0.8)})
+		
 		effectDisplayTween:Play()
 	end)
 
