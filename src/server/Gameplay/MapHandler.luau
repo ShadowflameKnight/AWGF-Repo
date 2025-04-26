@@ -1,4 +1,6 @@
 local replicatedStorage = game:GetService("ReplicatedStorage")
+local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
+
 local Workspace = game:GetService("Workspace")
 local mapsFolder = game.ServerStorage.Maps
 
@@ -8,7 +10,7 @@ local rooms = {}
 
 local mapLayout = {}
 
-local openDoorRemote = game.ReplicatedStorage.Gameplay.Traveling.OpenDoor
+local openDoorRemote = travelingRemotes.OpenDoor
 local function exitPrompt(roomInstance)
     --Stores where in the room order the current room is in, so that it may open the door for the next room in the list
     local placeInMapLayout = table.find(mapLayout, roomInstance)
@@ -21,7 +23,7 @@ local function exitPrompt(roomInstance)
 end
 
 --For when the player triggers an event
-local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
+local triggerEventRemote = travelingRemotes.TriggerEvent
 local function travelingEvent(roomInstance)
     roomInstance.EventTrigger.Touched:Connect(function(basePart)
         local partParent = basePart.Parent

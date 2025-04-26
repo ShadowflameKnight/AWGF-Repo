@@ -14,6 +14,7 @@ local tweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local replicatedStorage = game.ReplicatedStorage
+local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
 local lobbyMenuStorage = replicatedStorage.LobbyMenu
 
 local playerGUI = game.Players.LocalPlayer.PlayerGui
@@ -37,9 +38,12 @@ local gameplayGUI = playerGUI.GameplayGUI
 local travelGUI = gameplayGUI.TravelGUI
 local eventGUI = gameplayGUI.EventGUI
 
+-- Fired to Animate script in player scripts to toggle their respective animation.
+local toggleSprint = travelingRemotes.ToggleSprint
+
 local module = {}
 
-local triggerEventRemote = replicatedStorage.Gameplay.Traveling.TriggerEvent
+local triggerEventRemote = travelingRemotes.TriggerEvent
 local sprawlBattle = soundService.Music.SprawlBattle
 local musicTween = tweenService:Create(sprawlBattle, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Volume = 0.5})
 local backgroundFade = eventGUI.BackgroundFade
@@ -48,7 +52,7 @@ local backgroundFadeTween = tweenService:Create(backgroundFade, TweenInfo.new(1,
 local effectDisplayTween = tweenService:Create(effectDisplay, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0.5, 0.8)})
 function module.startGameplay(gamemode)
 
-	local mapLoadedRemote = replicatedStorage.Gameplay.Traveling.MapLoaded
+	local mapLoadedRemote = travelingRemotes.MapLoaded
 	mapLoadedRemote.OnClientEvent:Connect(function()
 		player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
 	end)
@@ -68,6 +72,7 @@ function module.startGameplay(gamemode)
 	UserInputService.InputBegan:Connect(function(input)
 		if canMove then
 			if input.KeyCode == Enum.KeyCode.LeftShift then
+				toggleSprint:Fire(true)
 				character.Humanoid.WalkSpeed = 32	
 			end
 		end
@@ -76,10 +81,12 @@ function module.startGameplay(gamemode)
 		if canMove then
 			if input.KeyCode == Enum.KeyCode.LeftShift then
 				character.Humanoid.WalkSpeed = 16
+				toggleSprint:Fire(false)
 			end
 		end
 	end)
 
+	
 	--When player touches an event trigger brick when traveling
 	triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
 		backgroundFade.BackgroundTransparency = 1
@@ -107,7 +114,7 @@ function module.startGameplay(gamemode)
 	end)
 
 	--Tweening and handling for when the player opens a door.
-	local openDoorRemote = game.ReplicatedStorage.Gameplay.Traveling.OpenDoor
+	local openDoorRemote = travelingRemotes.OpenDoor
 	openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMapLayout)
 		local nextRoom = mapLayout[placeInMapLayout + 1]
         local nextRoomEntranceDoor = nextRoom.EntranceWall.Door

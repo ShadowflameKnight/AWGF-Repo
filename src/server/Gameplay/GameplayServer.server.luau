@@ -1,6 +1,8 @@
 local startExpeditionRemote = game.ReplicatedStorage.LobbyMenu.Remotes.StartExpeditionRemote
+local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
+
 local mapHandler = require(script.Parent.MapHandler)
-local mapLoaded = game.ReplicatedStorage.Gameplay.Traveling.MapLoaded
+local mapLoaded = travelingRemotes.MapLoaded
 
 startExpeditionRemote.OnServerEvent:Connect(function(player)
 	mapHandler.loadMap("Testing")

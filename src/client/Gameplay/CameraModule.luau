@@ -1,3 +1,4 @@
+local SoundService = game.SoundService
 local runService = game:GetService("RunService")
 local tweenService = game:GetService("TweenService")
 
@@ -24,7 +25,7 @@ function module.travelingCamera()
 	until
 		camera.CameraType == Enum.CameraType.Scriptable
 	
-	local root = character:WaitForChild("HumanoidRootPart")
+	local _root = character:WaitForChild("HumanoidRootPart")
 	
 	local cameraDistanceFactor = 0
 	mouse.WheelForward:Connect(function()
@@ -49,8 +50,6 @@ function module.travelingCamera()
 					local rootPos, mousePos = root.Position, mouse.Hit.Position
 
 					root.CFrame = CFrame.new(rootPos, Vector3.new(mousePos.X, rootPos.Y, mousePos.Z))
-
-
 
 					--Adjust constant numbers manually to change the camera position in third person mode. 
 					cameraPart.CFrame = CFrame.new(character.HumanoidRootPart.Position + Vector3.new(-15 - cameraDistanceFactor, 25 + cameraDistanceFactor, 15 + cameraDistanceFactor), character.HumanoidRootPart.Position)
