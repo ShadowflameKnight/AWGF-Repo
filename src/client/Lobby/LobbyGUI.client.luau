@@ -7,6 +7,7 @@ local lobbyMenuStorage = replicatedStorage.LobbyMenu
 local playerGUI = game.Players.LocalPlayer.PlayerGui
 local lobbyGUI = playerGUI:WaitForChild("LobbyGUI")
 local miscGUI = playerGUI:WaitForChild("MiscGUI")
+local characterCreatorGUI = playerGUI.CharacterCreatorGUI
 
 local giveLobbyDataRemote = replicatedStorage.LobbyMenu.Remotes.GiveLobbyData
 
@@ -18,6 +19,10 @@ local music = soundService.Music
 local menusSounds = soundService.MenuSounds
 
 local uiButtonClickSound = menuSounds.UIButtonClick
+
+-- Setting GUI's
+miscGUI.Enabled = true
+characterCreatorGUI.Enabled = false
 
 ----New Slot Naming Sequence----------------------------------
 local isEmpty, completedTutorial = giveLobbyDataRemote.OnClientEvent:Wait()
@@ -60,3 +65,4 @@ startExpeditionRemote:FireServer("Lobby") -- Sent to GameplayServer
 startExpeditionBindable:Fire("Lobby")
 local gameplayClient = require(script.Parent.Parent.Gameplay.GameplayClient)
 gameplayClient.startGameplay("Lobby")
+

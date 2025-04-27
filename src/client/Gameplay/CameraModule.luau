@@ -80,7 +80,8 @@ end
 function module.goToCharacterCreator()
 	runService:UnbindFromRenderStep("TravelingCamera")
 
-	camera.CFrame = Workspace.CustomizeRoom.CameraPart.CFrame
+	--camera.CFrame = Workspace.CustomizeRoom.CameraPart.CFrame
+	camera.CFrame = CFrame.lookAt(Workspace.CustomizeRoom.CameraPart.Position, Vector3.new(167.418, 157.49, -94.394))
 end
 
 return module
