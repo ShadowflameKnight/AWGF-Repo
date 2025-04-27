@@ -10,8 +10,6 @@ local player = Players.LocalPlayer
 local character = player.Character
 local mouse = player:GetMouse()
 
-local camera = workspace.CurrentCamera
-
 local tweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -42,6 +40,7 @@ local uiButtonClickSound = menuSounds.UIButtonClick
 
 local goToCharacterCreator = replicatedStorage.LobbyMenu.Remotes.GoToCharacterCreator
 local transitionLoadingScreenModule = require(script.Parent.Parent.Misc.TransitionLoadingScreen)
+local characterCreatorModule = require(script.Parent.Parent.Lobby.CharacterCreator)
 
 -- Fired to Animate script in player scripts to toggle their respective animation.
 local toggleSprint = travelingRemotes.ToggleSprint
@@ -62,6 +61,8 @@ function module.startGameplay(gamemode)
 	--Re enabling mobile controls
 	local GuiService = game:GetService("GuiService") 
 local PackageService = game:GetService("PackageService")
+local StarterPlayer = game:GetService("StarterPlayer")
+local TransitionLoadingScreen = require(StarterPlayer.StarterPlayerScripts.Client.Misc.TransitionLoadingScreen)
 	GuiService.TouchControlsEnabled = true
 	
 	--Setting camera
@@ -122,6 +123,8 @@ local PackageService = game:GetService("PackageService")
 
 	goToCharacterCreator.OnClientEvent:Connect(function()
 		transitionLoadingScreenModule.CreateTransition()
+		characterCreatorModule.goToCharacterCreator()
+		TransitionLoadingScreen.DestroyTransition()
 	end)
 
 	--Cleaning up GUI from main menu

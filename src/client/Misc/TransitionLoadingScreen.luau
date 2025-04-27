@@ -1,16 +1,19 @@
 local tweenService = game:GetService("TweenService")
 
+local soundService = game:GetService("SoundService")
+local woosh = soundService.MenuSounds.LoadingScreenWoosh
+
 local playerGUI = game.Players.LocalPlayer.PlayerGui
 
 local miscUIElements = game.ReplicatedStorage.Misc.UIElements
 local transitionLoadingScreen = miscUIElements.TransitionLoadingScreen
 
+local miscGUI = playerGUI.MiscGUI
+
 local module = {}
 
-local transitionLoadingClone
-
 function module.CreateTransition()
-    transitionLoadingClone = transitionLoadingScreen:Clone()
+    local transitionLoadingClone = transitionLoadingScreen:Clone()
     transitionLoadingClone.Position = UDim2.fromScale(-1, 0)
     local loadingSpinner = transitionLoadingClone.LoadingSpinner
     local loadingtext = transitionLoadingClone.LoadingText
@@ -36,12 +39,17 @@ function module.CreateTransition()
     coroutine.resume(loadingDotDotDot)
 
     transitionLoadingClone.Parent = playerGUI.MiscGUI
-    tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0, 0)}):Play()
-    
+    local tween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0, 0)})
+    tween:Play()
+    tween.completed:Wait()
 end
 
 function module.DestroyTransition()
-    local tween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(1, 0)}):Play()
+    local transitionLoadingClone = miscGUI:FindFirstChild("TransitionLoadingScreen")
+    if transitionLoadingClone == nil then return end
+    local tween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(1, 0)})
+    tween:Play()
+    woosh:Play()
     tween.completed:Wait()
     transitionLoadingClone:Destroy()
 end

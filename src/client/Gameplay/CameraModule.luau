@@ -1,4 +1,5 @@
 local SoundService = game.SoundService
+local Workspace = game:GetService("Workspace")
 local runService = game:GetService("RunService")
 local tweenService = game:GetService("TweenService")
 
@@ -74,6 +75,12 @@ function module.travelingEvent(roomInstance)
 
 	local tweenCamera = tweenService:Create(camera, TweenInfo.new(2, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {CFrame = CFrame.new(cameraFocus.Position + Vector3.new(-15, 25, 15), cameraFocus.Position)})
 	tweenCamera:Play()
+end
+
+function module.goToCharacterCreator()
+	runService:UnbindFromRenderStep("TravelingCamera")
+
+	camera.CFrame = Workspace.CustomizeRoom.CameraPart.CFrame
 end
 
 return module
