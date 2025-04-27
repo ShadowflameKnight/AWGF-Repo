@@ -6,6 +6,8 @@ local mapsFolder = game.ServerStorage.Maps
 local lobbyFolder = mapsFolder.Lobby
 local lobbyStarterRoom = lobbyFolder.StartingRoom
 
+local goToCharacterCreatorRemote = replicatedStorage.LobbyMenu.Remotes.GoToCharacterCreator
+
 local tweenService = game:GetService("TweenService")
 
 local rooms = {}
@@ -132,8 +134,8 @@ function rooms.loadLobby(map)
 
     local prompt = startingRoomClone.ProximityPart.ProximityPrompt
 
-    prompt.Triggered:Connect(function()
-        print("GO")
+    prompt.Triggered:Connect(function(player)
+        goToCharacterCreatorRemote:FireClient(player)
     end)
 
 end

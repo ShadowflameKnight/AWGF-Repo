@@ -40,6 +40,8 @@ local soundEffects = soundService.SoundEffects
 
 local uiButtonClickSound = menuSounds.UIButtonClick
 
+local goToCharacterCreator = replicatedStorage.LobbyMenu.Remotes.GoToCharacterCreator
+local transitionLoadingScreenModule = require(script.Parent.Parent.Misc.TransitionLoadingScreen)
 
 -- Fired to Animate script in player scripts to toggle their respective animation.
 local toggleSprint = travelingRemotes.ToggleSprint
@@ -48,17 +50,18 @@ local module = {}
 
 local triggerEventRemote = travelingRemotes.TriggerEvent
 function module.startGameplay(gamemode)
-
+	print(gamemode)
 	local mapLoadedRemote = travelingRemotes.MapLoaded
 	mapLoadedRemote.OnClientEvent:Connect(function()
 		player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
 	end)
 
 	--Change lighting to the specified things under the module script
-	lightingConfig.changeLighting(gamemode)
+	--lightingConfig.changeLighting(gamemode)
 
 	--Re enabling mobile controls
 	local GuiService = game:GetService("GuiService") 
+local PackageService = game:GetService("PackageService")
 	GuiService.TouchControlsEnabled = true
 	
 	--Setting camera
@@ -117,6 +120,11 @@ function module.startGameplay(gamemode)
 	gameplayGUI.Enabled = true
 	travelGUI.Enabled = true
 
+	goToCharacterCreator.OnClientEvent:Connect(function()
+		transitionLoadingScreenModule.CreateTransition()
+	end)
+
+	--Cleaning up GUI from main menu
 	local blackscreenClone = miscGUI:FindFirstChild("BlackScreen")
 	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(-1, 0)})
 	tweenBlackscreen:Play()	
