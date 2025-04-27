@@ -69,7 +69,7 @@ function module.startGameplay(gamemode)
 	UserInputService.InputBegan:Connect(function(input)
 		if canMove then
 			if input.KeyCode == Enum.KeyCode.LeftShift then
-				toggleSprint:Fire(true)
+				toggleSprint:Fire(true) -- Sent to animate
 				character.Humanoid.WalkSpeed = 32	
 			end
 		end
@@ -78,7 +78,7 @@ function module.startGameplay(gamemode)
 		if canMove then
 			if input.KeyCode == Enum.KeyCode.LeftShift then
 				character.Humanoid.WalkSpeed = 16
-				toggleSprint:Fire(false)
+				toggleSprint:Fire(false) -- Sent to animate
 			end
 		end
 	end)

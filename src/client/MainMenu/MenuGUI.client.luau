@@ -93,7 +93,7 @@ local function gameStart(slotNumber)
 	textPopUpModule.popUpText(game.Players.LocalPlayer, "Game Start")
 	
 	local gameStartRemote = mainMenuStorage.Remotes.GameStart
-	gameStartRemote:InvokeServer(slotNumber)
+	gameStartRemote:InvokeServer(slotNumber) --Sent to nowhere?
 
 	local menuGUI = playerGUI:FindFirstChild("MenuGUI")
 	if not menuGUI then

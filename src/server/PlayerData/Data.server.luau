@@ -109,8 +109,9 @@ local giveLobbyData = game.ReplicatedStorage.LobbyMenu.Remotes.GiveLobbyData
 gameStartRemote.OnServerInvoke = function(player, slotNumber)
 	local profile = loadProfile(player, slotNumber)
 	local isEmpty = profile.Data.mainMenuData.isEmpty
-	local completedTutorial = profile.Data.achievements.completedTutorial
-	giveLobbyData:FireClient(player, isEmpty, completedTutorial)
+	local completedTutorial = true
+	--local completedTutorial = profile.Data.achievements.completedTutorial
+	giveLobbyData:FireClient(player, isEmpty, completedTutorial) -- Send to lobbyGUI
 	print(profile.Data.mainMenuData.saveName)
 end
 

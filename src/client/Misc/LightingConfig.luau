@@ -34,7 +34,6 @@ local module = {
        },
     },
 
-
     ---Lighting for stages and maps during gameplay
     tutorial = {
         Lighting = {
@@ -56,6 +55,7 @@ local module = {
 
 function module.changeLighting(lightingLocation)
     local location = module[lightingLocation]
+    if location == nil then return end
     for property, value in pairs(location.Lighting) do
         Lighting[property] = value
     end

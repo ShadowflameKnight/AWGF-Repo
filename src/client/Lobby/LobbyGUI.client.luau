@@ -39,32 +39,24 @@ end
 local startExpeditionRemote = lobbyMenuStorage.Remotes.StartExpeditionRemote
 local startExpeditionBindable = lobbyMenuStorage.Remotes.StartExpeditionBindable
 ----Tutorial Sequence----------------------------------
-
+--[[
 if not completedTutorial then
 	print("not completed tutorial")
 	--Whenever i get to making the tutorial replace that code here
 	
-	startExpeditionRemote:FireServer("Tutorial")
+	startExpeditionRemote:FireServer("Tutorial") -- Sent to GameplayServer
 	startExpeditionBindable:Fire("Tutorial")
 	local gameplayClient = require(script.Parent.Parent.Gameplay.GameplayClient)
 	gameplayClient.startGameplay("tutorial")
 else
-	print("script start 2")
-	lobbyInitializer.initalizeLobby()
-
-	local blackscreenClone = lobbyGUI:FindFirstChild("BlackScreen")
-	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.new(-1, 0)})
-	tweenBlackscreen:Play()	
-
-	local loadingScreenWoosh = menuSounds.LoadingScreenWoosh
-	loadingScreenWoosh:Play()
-
-	local waitForWoosh 
-	waitForWoosh = loadingScreenWoosh.Ended:Connect(function()
-		music.LobbyMusic:Play()
-		blackscreenClone:Destroy()
-		waitForWoosh:Disconnect()
-	end)
+	startExpeditionRemote:FireServer("Lobby") -- Sent to GameplayServer
+	startExpeditionBindable:Fire("Lobby")
+	local gameplayClient = require(script.Parent.Parent.Gameplay.GameplayClient)
+	gameplayClient.startGameplay("Lobby")
 
 end
-----------
+]]----------
+startExpeditionRemote:FireServer("Lobby") -- Sent to GameplayServer
+startExpeditionBindable:Fire("Lobby")
+local gameplayClient = require(script.Parent.Parent.Gameplay.GameplayClient)
+gameplayClient.startGameplay("Lobby")

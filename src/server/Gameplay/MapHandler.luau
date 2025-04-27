@@ -3,6 +3,8 @@ local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
 
 local Workspace = game:GetService("Workspace")
 local mapsFolder = game.ServerStorage.Maps
+local lobbyFolder = mapsFolder.Lobby
+local lobbyStarterRoom = lobbyFolder.StartingRoom
 
 local tweenService = game:GetService("TweenService")
 
@@ -121,6 +123,19 @@ function rooms.loadMap(map)
         end
         
     end
+end
+
+function rooms.loadLobby(map)
+    print("lobby")
+    local startingRoomClone = lobbyStarterRoom:Clone()
+    startingRoomClone.Parent = Workspace
+
+    local prompt = startingRoomClone.ProximityPart.ProximityPrompt
+
+    prompt.Triggered:Connect(function()
+        print("GO")
+    end)
+
 end
 
 return rooms

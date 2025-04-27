@@ -70,7 +70,7 @@ function module.initalizeLobby()
 	
 	----Lobby Visuals after initialization completed----------------------------------
 
-	lightingConfig.changeLighting("lobby")
+	--lightingConfig.changeLighting("lobby")
 	local blackscreenClone = lobbyGUI:FindFirstChild("BlackScreen")
 	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.new(-1, 0)})
 	tweenBlackscreen:Play()	
