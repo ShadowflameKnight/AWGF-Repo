@@ -52,43 +52,4 @@ function module.newSlot()
 end
 
 
-function module.initalizeLobby()
-	----Lobby button Initalization----------------------------------
-	local playButton = lobbyMenuStorage.UIElements.Play
-	local loadoutButton = lobbyMenuStorage.UIElements.Loadout
-	local settingsButton = lobbyMenuStorage.UIElements.Settings
-
-	local playButtonClone = playButton:Clone()
-	playButtonClone.Parent = lobbyGUI
-
-	local loadoutButtonClone = loadoutButton:Clone()
-	loadoutButton.Parent = lobbyGUI
-
-	local settingsButtonClone = settingsButton:Clone()
-	settingsButton.Parent = lobbyGUI
-
-	
-	----Lobby Visuals after initialization completed----------------------------------
-
-	--lightingConfig.changeLighting("lobby")
-	local blackscreenClone = lobbyGUI:FindFirstChild("BlackScreen")
-	local tweenBlackscreen = tweenService:Create(blackscreenClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.new(-1, 0)})
-	tweenBlackscreen:Play()	
-
-	local loadingScreenWoosh = menuSounds.LoadingScreenWoosh
-	loadingScreenWoosh:Play()
-
-	local waitForWoosh 
-	waitForWoosh = loadingScreenWoosh.Ended:Connect(function()
-		music.LobbyMusic:Play()
-		blackscreenClone:Destroy()
-		waitForWoosh:Disconnect()
-	end)
-end
-
-function module.closeLobby()
-	lobbyGUI.Enabled = false
-end
-
-
 return module

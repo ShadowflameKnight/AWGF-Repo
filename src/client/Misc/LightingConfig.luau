@@ -1,7 +1,7 @@
 local Lighting = game:GetService("Lighting")
 local module = {
     ---lobby and main menu lighting
-    mainMenu = {
+    MainMenu = {
         Lighting = {
             Ambient = Color3.fromRGB(0,0,0),
             Brightness = 0,
@@ -17,17 +17,34 @@ local module = {
         Enabled = false
        },
     },
-    lobby = {
+    Lobby = {
         Lighting = {
-            Ambient = Color3.fromRGB(70,70,70),
-            Brightness = 3,
-            ShadowSoftness = 0.2,
-            OutdoorAmbient = Color3.fromRGB(70,70,70),
+            Ambient = Color3.fromRGB(0,0,0),
+            Brightness = 0,
+            ShadowSoftness = 0,
+            OutdoorAmbient = Color3.fromRGB(0,0,0),
             ClockTime = 0,
         },
        Atmosphere = {
-            Color = Color3.fromRGB(199, 199, 199),
-            Decay = Color3.fromRGB(106, 112, 125),
+            Color = Color3.fromRGB(0,0,0),
+            Decay = Color3.fromRGB(0,0,0),
+       },
+       Blur = {
+        Enabled = false
+       },
+    },
+
+    Rebirth = {
+        Lighting = {
+            Ambient = Color3.fromRGB(0,0,0),
+            Brightness = 0,
+            ShadowSoftness = 0,
+            OutdoorAmbient = Color3.fromRGB(0,0,0),
+            ClockTime = 0,
+        },
+       Atmosphere = {
+            Color = Color3.fromRGB(0,0,0),
+            Decay = Color3.fromRGB(0,0,0),
        },
        Blur = {
         Enabled = false
@@ -35,7 +52,7 @@ local module = {
     },
 
     ---Lighting for stages and maps during gameplay
-    tutorial = {
+    Tutorial = {
         Lighting = {
             Ambient = Color3.fromRGB(30,30,30),
             Brightness = 3,
@@ -55,7 +72,7 @@ local module = {
 
 function module.changeLighting(lightingLocation)
     local location = module[lightingLocation]
-    if location == nil then return end
+    print(location)
     for property, value in pairs(location.Lighting) do
         Lighting[property] = value
     end

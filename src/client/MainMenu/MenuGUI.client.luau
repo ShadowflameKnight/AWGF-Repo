@@ -39,7 +39,7 @@ local confirmSound = menuSounds.ConfirmSound
 
 ---Initializing lighting-----------
 local lightingConfig = require(game.StarterPlayer.StarterPlayerScripts.Client.Misc.LightingConfig)
-lightingConfig.changeLighting("mainMenu")
+lightingConfig.changeLighting("MainMenu")
 
 ---"Click anywhere to continue"--------------------------------------------------------
 local gameTitle = menuGUI.GameTitle

@@ -56,13 +56,13 @@ function module.startGameplay(gamemode)
 	end)
 
 	--Change lighting to the specified things under the module script
-	--lightingConfig.changeLighting(gamemode)
+	lightingConfig.changeLighting(gamemode)
 
 	--Re enabling mobile controls
 	local GuiService = game:GetService("GuiService") 
-local PackageService = game:GetService("PackageService")
-local StarterPlayer = game:GetService("StarterPlayer")
-local TransitionLoadingScreen = require(StarterPlayer.StarterPlayerScripts.Client.Misc.TransitionLoadingScreen)
+	local PackageService = game:GetService("PackageService")
+	local StarterPlayer = game:GetService("StarterPlayer")
+	local TransitionLoadingScreen = require(StarterPlayer.StarterPlayerScripts.Client.Misc.TransitionLoadingScreen)
 	GuiService.TouchControlsEnabled = true
 	
 	--Setting camera
@@ -124,6 +124,7 @@ local TransitionLoadingScreen = require(StarterPlayer.StarterPlayerScripts.Clien
 	goToCharacterCreator.OnClientEvent:Connect(function()
 		transitionLoadingScreenModule.CreateTransition()
 		characterCreatorModule.goToCharacterCreator()
+		task.wait(2)
 		TransitionLoadingScreen.DestroyTransition()
 	end)
 
