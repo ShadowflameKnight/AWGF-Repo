@@ -1,3 +1,5 @@
+-- This script focuses on initializing the game once the user has selected a save.
+
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local startGameplayBindable = replicatedStorage.LobbyMenu.Remotes.StartExpeditionBindable
 
@@ -20,6 +22,11 @@ local lobbyMenuStorage = replicatedStorage.LobbyMenu
 local playerGUI = game.Players.LocalPlayer.PlayerGui
 local lobbyGUI = playerGUI:WaitForChild("LobbyGUI")
 local miscGUI = playerGUI:WaitForChild("MiscGUI")
+local gameplayGUI = playerGUI.GameplayGUI
+local travelGUI = gameplayGUI.TravelGUI
+local eventGUI = gameplayGUI.EventGUI
+
+local triggerEventModule = require(script.Parent.TriggerEvent)
 
 local textPopUpModule = require(game.ReplicatedStorage.Shared.PopupText)
 local cameraModule = require(script.Parent.CameraModule)
@@ -32,11 +39,7 @@ local menusSounds = soundService.MenuSounds
 local soundEffects = soundService.SoundEffects
 
 local uiButtonClickSound = menuSounds.UIButtonClick
-local eventSound = soundEffects.EventSound
 
-local gameplayGUI = playerGUI.GameplayGUI
-local travelGUI = gameplayGUI.TravelGUI
-local eventGUI = gameplayGUI.EventGUI
 
 -- Fired to Animate script in player scripts to toggle their respective animation.
 local toggleSprint = travelingRemotes.ToggleSprint
@@ -44,12 +47,6 @@ local toggleSprint = travelingRemotes.ToggleSprint
 local module = {}
 
 local triggerEventRemote = travelingRemotes.TriggerEvent
-local sprawlBattle = soundService.Music.SprawlBattle
-local musicTween = tweenService:Create(sprawlBattle, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Volume = 0.5})
-local backgroundFade = eventGUI.BackgroundFade
-local effectDisplay = eventGUI.EffectDisplay
-local backgroundFadeTween = tweenService:Create(backgroundFade, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {BackgroundTransparency = 0.3})
-local effectDisplayTween = tweenService:Create(effectDisplay, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0.5, 0.8)})
 function module.startGameplay(gamemode)
 
 	local mapLoadedRemote = travelingRemotes.MapLoaded
@@ -89,28 +86,10 @@ function module.startGameplay(gamemode)
 	
 	--When player touches an event trigger brick when traveling
 	triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
-		backgroundFade.BackgroundTransparency = 1
-		effectDisplay.Position = UDim2.fromScale(0.5, 1)
-		
-		sprawlBattle.Volume = 0.25
-		sprawlBattle:Play()
-
-		eventSound:Play()
-		
 		cameraModule.travelingEvent(roomInstance)
 		canMove = false
 		character.Humanoid.WalkSpeed = 0
-
-		-- Doing GUI stuff
-		task.wait(2)
-		travelGUI.Enabled = false
-		eventGUI.Enabled = true
-		
-		musicTween:Play()
-		
-		backgroundFadeTween:Play()
-		
-		effectDisplayTween:Play()
+		triggerEventModule.EventTriggered()
 	end)
 
 	--Tweening and handling for when the player opens a door.

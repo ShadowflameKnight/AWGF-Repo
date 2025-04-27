@@ -19,7 +19,6 @@ local menusSounds = soundService.MenuSounds
 
 local uiButtonClickSound = menuSounds.UIButtonClick
 
-print("Script Start")
 ----New Slot Naming Sequence----------------------------------
 local isEmpty, completedTutorial = giveLobbyDataRemote.OnClientEvent:Wait()
 
