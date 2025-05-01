@@ -1,6 +1,7 @@
 local module = {}
 
 local tweenService = game:GetService("TweenService")
+local player = game.Players.LocalPlayer
 
 local replicatedStorage = game.ReplicatedStorage
 local lobbyMenuStorage = replicatedStorage.LobbyMenu
@@ -10,7 +11,7 @@ local lobbyGUI = playerGUI:WaitForChild("LobbyGUI")
 
 local giveLobbyDataRemote = replicatedStorage.LobbyMenu.Remotes.GiveLobbyData
 
-local textPopUpModule = require(game.ReplicatedStorage.Shared.PopupText)
+local textPopUpModule = require(player.PlayerScripts.Client.Misc.PopupText)
 
 local soundService = game.SoundService
 local menuSounds = soundService.MenuSounds

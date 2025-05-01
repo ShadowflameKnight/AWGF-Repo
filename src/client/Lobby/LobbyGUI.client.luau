@@ -7,11 +7,11 @@ local lobbyMenuStorage = replicatedStorage.LobbyMenu
 local playerGUI = game.Players.LocalPlayer.PlayerGui
 local lobbyGUI = playerGUI:WaitForChild("LobbyGUI")
 local miscGUI = playerGUI:WaitForChild("MiscGUI")
-local characterCreatorGUI = playerGUI.CharacterCreatorGUI
+local characterCreatorGUI = playerGUI:WaitForChild("CharacterCreatorGUI")
 
 local giveLobbyDataRemote = replicatedStorage.LobbyMenu.Remotes.GiveLobbyData
 
-local textPopUpModule = require(game.ReplicatedStorage.Shared.PopupText)
+local textPopUpModule = require(player.PlayerScripts.Client.Misc.PopupText)
 
 local soundService = game.SoundService
 local menuSounds = soundService.MenuSounds

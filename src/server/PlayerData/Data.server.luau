@@ -115,6 +115,8 @@ gameStartRemote.OnServerInvoke = function(player, slotNumber)
 	print(profile.Data.mainMenuData.saveName)
 end
 
+--Getting 1 layer player data------------
+
 
 local newSlotNameRemote = game.ReplicatedStorage.LobbyMenu.Remotes.NewSlotName
 newSlotNameRemote.OnServerInvoke = function(player, slotName)

@@ -11,7 +11,8 @@ local module = {
 	achievements = {
 		completedTutorial = false
 	},
-	isDead = true
+	isDead = true,
+	location = ""
 }
 
 return module

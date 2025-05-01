@@ -26,7 +26,7 @@ local eventGUI = gameplayGUI.EventGUI
 
 local triggerEventModule = require(script.Parent.TriggerEvent)
 
-local textPopUpModule = require(game.ReplicatedStorage.Shared.PopupText)
+local textPopUpModule = require(player.PlayerScripts.Client.Misc.PopupText)
 local cameraModule = require(script.Parent.CameraModule)
 local lightingConfig = require(game.StarterPlayer.StarterPlayerScripts.Client.Misc.LightingConfig)
 
@@ -41,6 +41,9 @@ local uiButtonClickSound = menuSounds.UIButtonClick
 local goToCharacterCreator = replicatedStorage.LobbyMenu.Remotes.GoToCharacterCreator
 local transitionLoadingScreenModule = require(script.Parent.Parent.Misc.TransitionLoadingScreen)
 local characterCreatorModule = require(script.Parent.Parent.Lobby.CharacterCreator)
+
+local location = ""
+local locationPopupModule = require(script.Parent.Parent.Misc.LocationPopup)
 
 -- Fired to Animate script in player scripts to toggle their respective animation.
 local toggleSprint = travelingRemotes.ToggleSprint
@@ -126,6 +129,8 @@ function module.startGameplay(gamemode)
 		characterCreatorModule.goToCharacterCreator()
 		task.wait(2)
 		TransitionLoadingScreen.DestroyTransition()
+		locationPopupModule.displayLocation(location)
+
 	end)
 
 	--Cleaning up GUI from main menu

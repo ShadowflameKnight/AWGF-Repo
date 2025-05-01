@@ -1,4 +1,5 @@
-local playerGUI = game.Players.LocalPlayer.PlayerGui
+local player = game.Players.LocalPlayer
+local playerGUI = player.PlayerGui
 
 local GuiService = game:GetService("GuiService") 
 GuiService.TouchControlsEnabled = false
@@ -76,7 +77,7 @@ local miscGUI = playerGUI.MiscGUI
 local blackscreen = game.ReplicatedStorage.Misc.UIElements.BlackScreen
 
 
-local textPopUpModule = require(game.ReplicatedStorage.Shared.PopupText)
+local textPopUpModule = require(player.PlayerScripts.Client.Misc.PopupText)
 
 local function gameStart(slotNumber)
 	confirmSound:Play()
