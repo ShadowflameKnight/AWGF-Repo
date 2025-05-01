@@ -4,6 +4,7 @@ local soundService = game:GetService("SoundService")
 local woosh = soundService.MenuSounds.LoadingScreenWoosh
 
 local playerGUI = game.Players.LocalPlayer.PlayerGui
+local camera = game.Workspace.Camera
 
 local miscUIElements = game.ReplicatedStorage.Misc.UIElements
 local transitionLoadingScreen = miscUIElements.TransitionLoadingScreen
@@ -14,7 +15,7 @@ local module = {}
 
 function module.CreateTransition()
     local transitionLoadingClone = transitionLoadingScreen:Clone()
-    transitionLoadingClone.Position = UDim2.fromScale(-1, 0)
+    transitionLoadingClone.Transparency = 1
     local loadingSpinner = transitionLoadingClone.LoadingSpinner
     local loadingtext = transitionLoadingClone.LoadingText
 
@@ -39,18 +40,26 @@ function module.CreateTransition()
     coroutine.resume(loadingDotDotDot)
 
     transitionLoadingClone.Parent = playerGUI.MiscGUI
-    local tween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(0, 0)})
-    tween:Play()
-    tween.completed:Wait()
+    local fovTween = tweenService:Create(camera, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {FieldOfView = 30})
+    fovTween:Play()
+    local transparencyTween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Transparency = 0})
+    transparencyTween:Play()
+    transparencyTween.completed:Wait()
 end
 
 function module.DestroyTransition()
     local transitionLoadingClone = miscGUI:FindFirstChild("TransitionLoadingScreen")
     if transitionLoadingClone == nil then return end
-    local tween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.fromScale(1, 0)})
-    tween:Play()
+    for i, v in ipairs(transitionLoadingClone:GetChildren()) do
+        v:Destroy()
+    end
+
+    local fovTween = tweenService:Create(camera, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {FieldOfView = 70})
+    fovTween:Play()
+    local transparencyTween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Transparency = 1})
+    transparencyTween:Play()
     woosh:Play()
-    tween.completed:Wait()
+    transparencyTween.completed:Wait()
     transitionLoadingClone:Destroy()
 end
 
