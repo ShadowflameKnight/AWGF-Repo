@@ -1,5 +1,5 @@
 local SoundService = game.SoundService
-local Workspace = game:GetService("Workspace")
+local workspace = game:GetService("workspace")
 local runService = game:GetService("RunService")
 local tweenService = game:GetService("TweenService")
 
@@ -80,8 +80,8 @@ end
 function module.goToCharacterCreator()
 	runService:UnbindFromRenderStep("TravelingCamera")
 
-	--camera.CFrame = Workspace.CustomizeRoom.CameraPart.CFrame
-	camera.CFrame = CFrame.lookAt(Workspace.CustomizeRoom.CameraPart.Position, Vector3.new(167.418, 157.49, -94.394))
+	--camera.CFrame = workspace.CustomizeRoom.CameraPart.CFrame
+	camera.CFrame = CFrame.lookAt(workspace.CustomizeRoom.CameraPart.Position, Vector3.new(167.418, 157.49, -94.394))
 end
 
 return module

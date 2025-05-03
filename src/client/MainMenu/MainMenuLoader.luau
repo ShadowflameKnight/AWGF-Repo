@@ -10,7 +10,7 @@ local mainMenuRoomClone
 function module.loadLobby()
     mainMenuRoom = replicatedStorage.MainMenuRoom
     mainMenuRoomClone = mainMenuRoom:Clone()
-    mainMenuRoomClone.Parent = game.Workspace
+    mainMenuRoomClone.Parent = game.workspace
 
     local root = workspace.MainMenuRoom.Base.Crystal.Root
 

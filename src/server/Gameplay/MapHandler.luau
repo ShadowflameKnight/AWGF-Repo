@@ -1,12 +1,13 @@
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
+local miscRemotes = replicatedStorage.Misc.Remotes
 
-local Workspace = game:GetService("Workspace")
+local workspace = game:GetService("workspace")
 local mapsFolder = game.ServerStorage.Maps
-local lobbyFolder = mapsFolder.Lobby
-local lobbyStarterRoom = lobbyFolder.StartingRoom
 
 local goToCharacterCreatorRemote = replicatedStorage.LobbyMenu.Remotes.GoToCharacterCreator
+local teleportBackToSpawnBox = travelingRemotes.TeleportBackToSpawnBox
+local changeLightingRemote = miscRemotes.ChangeLighting
 
 local tweenService = game:GetService("TweenService")
 
@@ -93,7 +94,7 @@ function rooms.determineNewRoom(prevRoom, map, horizontalDirection, verticleDire
     --Root the room onto the previous room's exit part
     randomRoom.PrimaryPart = randomRoom.Entrance
 	randomRoom:PivotTo(prevRoom.Exit.CFrame)
-	randomRoom.Parent = Workspace
+	randomRoom.Parent = workspace
 
     --Return the previous room so that it may be saved
     table.insert(mapLayout, randomRoom)
@@ -106,7 +107,7 @@ function rooms.loadMap(map)
     table.insert(mapLayout, starterRoom)
 
 
-    starterRoom.Parent = Workspace
+    starterRoom.Parent = workspace
 
 	---Keeping track of previous room, starting with the starter room
 	local prevRoom = starterRoom
@@ -127,17 +128,34 @@ function rooms.loadMap(map)
     end
 end
 
-function rooms.loadLobby(map)
+function rooms.loadCrystal()
+    print("Crystal")
+    changeLightingRemote:FireAllClients("Crystal")
+    local startingRoomClone = mapsFolder.Crystal.StartingRoom:Clone()
+    startingRoomClone.Parent = workspace
+
+    local prompt = startingRoomClone.ProximityPart.ProximityPrompt
+    prompt.Triggered:Connect(function(player)
+        goToCharacterCreatorRemote:FireClient(player)
+        task.wait(1) --Waiting for the loading screen to kick in
+        teleportBackToSpawnBox:FireClient(player)
+        startingRoomClone:Destroy()
+    end)
+end
+
+function rooms.loadLobby()
+    --[[
     print("lobby")
     local startingRoomClone = lobbyStarterRoom:Clone()
-    startingRoomClone.Parent = Workspace
+    startingRoomClone.Parent = workspace
 
     local prompt = startingRoomClone.ProximityPart.ProximityPrompt
 
     prompt.Triggered:Connect(function(player)
         goToCharacterCreatorRemote:FireClient(player)
+        teleportBackToSpawnBox:FireClient(player)
     end)
-
+]]
 end
 
 return rooms

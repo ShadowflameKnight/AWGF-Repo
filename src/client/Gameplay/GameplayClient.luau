@@ -118,15 +118,20 @@ openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMa
 	soundEffects.MetalDoorOpening:Play()
 end)
 
+--Teleport to the StartingRoom's spawnbrick when the map has loaded
 local mapLoadedRemote = travelingRemotes.MapLoaded
-	mapLoadedRemote.OnClientEvent:Connect(function()
-		player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
-	end)
-function module.startGameplay(gamemode)
-	print(gamemode)
+mapLoadedRemote.OnClientEvent:Connect(function()
+	player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
+end)
 
-	--Change lighting to the specified things under the module script
-	lightingConfig.changeLighting(gamemode)
+local spawnBox = game.workspace:WaitForChild("Spawnbox")
+local teleportBackToSpawnBox = travelingRemotes.TeleportBackToSpawnBox
+teleportBackToSpawnBox.OnClientEvent:Connect(function()
+	player.Character.HumanoidRootPart.CFrame = spawnBox.SpawnLocation.CFrame
+end)
+
+function module.startGameplay(map)
+	print(map)
 
 	--Re enabling mobile controls
 	local GuiService = game:GetService("GuiService") 

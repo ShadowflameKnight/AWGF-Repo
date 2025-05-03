@@ -1,10 +1,18 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
 local startExpeditionRemote = game.ReplicatedStorage.LobbyMenu.Remotes.StartExpeditionRemote
 local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
+local loadLobbyRemote = replicatedStorage.Gameplay.Traveling.Remotes.LoadLobby
 
 local mapHandler = require(script.Parent.MapHandler)
 local mapLoaded = travelingRemotes.MapLoaded
 
 local dataManager = require(script.Parent.Parent.PlayerData.Manager)
+
+loadLobbyRemote.OnServerEvent:Connect(function() -- From CharacterCreator
+	mapHandler.loadLobby()
+	game.workspace:WaitForChild("StartingRoom")
+	mapLoaded:FireAllClients()
+end)
 
 startExpeditionRemote.OnServerEvent:Connect(function(player, map) --From LobbyGUI
 		--mapHandler.loadMap("Testing")
@@ -13,7 +21,8 @@ startExpeditionRemote.OnServerEvent:Connect(function(player, map) --From LobbyGU
 		local isDead = profile.Data.isDead
 		print(isDead)
 		if isDead then
-			mapHandler.loadLobby("Lobby")
+			mapHandler.loadCrystal()
+			game.workspace:WaitForChild("StartingRoom")
 			mapLoaded:FireAllClients()
 		end
 

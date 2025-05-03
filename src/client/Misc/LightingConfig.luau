@@ -1,4 +1,7 @@
 local Lighting = game:GetService("Lighting")
+local replicatedStorage = game.ReplicatedStorage
+local changeLightingRemote = replicatedStorage.Misc.Remotes.ChangeLighting
+
 local module = {
     ---lobby and main menu lighting
     MainMenu = {
@@ -17,7 +20,7 @@ local module = {
         Enabled = false
        },
     },
-    Lobby = {
+    Crystal = {
         Lighting = {
             Ambient = Color3.fromRGB(0,0,0),
             Brightness = 0,
@@ -34,7 +37,7 @@ local module = {
        },
     },
 
-    Rebirth = {
+    Lobby = {
         Lighting = {
             Ambient = Color3.fromRGB(0,0,0),
             Brightness = 0,
@@ -70,7 +73,7 @@ local module = {
     },
 }
 
-function module.changeLighting(lightingLocation)
+local function changeLighting(lightingLocation)
     local location = module[lightingLocation]
     print(location)
     for property, value in pairs(location.Lighting) do
@@ -84,6 +87,13 @@ function module.changeLighting(lightingLocation)
     end
 
     return
+end
+
+function module.changeLighting(lightingLocation)
+    changeLighting(lightingLocation)
 end 
+
+--Fired from MapHandler
+changeLightingRemote.OnClientEvent:Connect(changeLighting)
 
 return module
