@@ -103,7 +103,7 @@ local function gameStart(slotNumber)
 	else
 		mainMenuLoader.closeMainMenu()
 		menuGUI:Destroy()	
-		script:Destroy()
+		script.Parent:Destroy()
 	end
 end
 

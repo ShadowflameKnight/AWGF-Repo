@@ -5,6 +5,7 @@ local gameplayGUI = playerGUI.GameplayGUI
 local travelGUI = gameplayGUI.TravelGUI
 local eventGUI = gameplayGUI.EventGUI
 local characterCreatorGUI = playerGUI.CharacterCreatorGUI
+local createCharacterButton = characterCreatorGUI.CreateCharacter
 
 local cameraModule = require(script.Parent.Parent.Gameplay.CameraModule)
 
@@ -15,6 +16,17 @@ function module.goToCharacterCreator()
     cameraModule.goToCharacterCreator()
     gameplayGUI.Enabled = false
     travelGUI.Enabled = false
+
+	local connection 
+    connection = createCharacterButton.Activated:Connect(function()
+        ---save character creator stuff to data profile
+        --put stuff here later
+        --put stuff here later
+
+		connection:Disconnect()
+    end)
 end
+
+
 
 return module

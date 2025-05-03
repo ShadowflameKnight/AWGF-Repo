@@ -40,8 +40,6 @@ function module.CreateTransition()
     coroutine.resume(loadingDotDotDot)
 
     transitionLoadingClone.Parent = playerGUI.MiscGUI
-    local fovTween = tweenService:Create(camera, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {FieldOfView = 30})
-    fovTween:Play()
     local transparencyTween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Transparency = 0})
     transparencyTween:Play()
     transparencyTween.completed:Wait()
@@ -54,6 +52,7 @@ function module.DestroyTransition()
         v:Destroy()
     end
 
+    camera.FieldOfView = 30
     local fovTween = tweenService:Create(camera, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {FieldOfView = 70})
     fovTween:Play()
     local transparencyTween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Transparency = 1})

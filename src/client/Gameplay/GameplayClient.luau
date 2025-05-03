@@ -48,9 +48,68 @@ local locationPopupModule = require(script.Parent.Parent.Misc.LocationPopup)
 -- Fired to Animate script in player scripts to toggle their respective animation.
 local toggleSprint = travelingRemotes.ToggleSprint
 
+--Sprinting
+local canMove = true
+UserInputService.InputBegan:Connect(function(input)
+	if canMove then
+		if input.KeyCode == Enum.KeyCode.LeftShift then
+			toggleSprint:Fire(true) -- Sent to animate
+			character.Humanoid.WalkSpeed = 32	
+		end
+	end
+end)
+UserInputService.InputEnded:Connect(function(input)
+	if canMove then
+		if input.KeyCode == Enum.KeyCode.LeftShift then
+			character.Humanoid.WalkSpeed = 16
+			toggleSprint:Fire(false) -- Sent to animate
+		end
+	end
+end)
+
+local TransitionLoadingScreen = require(game.StarterPlayer.StarterPlayerScripts.Client.Misc.TransitionLoadingScreen)
+goToCharacterCreator.OnClientEvent:Connect(function()
+	transitionLoadingScreenModule.CreateTransition()
+	characterCreatorModule.goToCharacterCreator()
+	task.wait(2)
+	TransitionLoadingScreen.DestroyTransition()
+	locationPopupModule.displayLocation(location)
+
+end)
+
 local module = {}
 
 local triggerEventRemote = travelingRemotes.TriggerEvent
+--When player touches an event trigger brick when traveling
+triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
+	cameraModule.travelingEvent(roomInstance)
+	canMove = false
+	character.Humanoid.WalkSpeed = 0
+	triggerEventModule.EventTriggered()
+end)
+
+--Tweening and handling for when the player opens a door.
+local openDoorRemote = travelingRemotes.OpenDoor
+openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMapLayout)
+	local nextRoom = mapLayout[placeInMapLayout + 1]
+	local nextRoomEntranceDoor = nextRoom.EntranceWall.Door
+	local currentRoomExitDoor = roomInstance.ExitWall.Door
+
+	local tweenEntranceRightDoor = tweenService:Create(nextRoomEntranceDoor.RightDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = nextRoomEntranceDoor.EndpointRight.CFrame})
+	tweenEntranceRightDoor:Play()
+	local tweenLeftDoor = tweenService:Create(nextRoomEntranceDoor.LeftDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = nextRoomEntranceDoor.EndpointLeft.CFrame})
+	tweenLeftDoor:Play()
+
+	local tweenExitRightDoor = tweenService:Create(currentRoomExitDoor.RightDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = currentRoomExitDoor.EndpointRight.CFrame})
+	tweenExitRightDoor:Play()
+	local tweenExitLeftDoor = tweenService:Create(currentRoomExitDoor.LeftDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = currentRoomExitDoor.EndpointLeft.CFrame})
+	tweenExitLeftDoor:Play()
+
+	local prompt = roomInstance.ExitWall.Door.ProxPart.ProximityPrompt
+	prompt.Parent:Destroy()
+	soundEffects.MetalDoorOpening:Play()
+end)
+
 function module.startGameplay(gamemode)
 	print(gamemode)
 	local mapLoadedRemote = travelingRemotes.MapLoaded
@@ -63,75 +122,13 @@ function module.startGameplay(gamemode)
 
 	--Re enabling mobile controls
 	local GuiService = game:GetService("GuiService") 
-	local PackageService = game:GetService("PackageService")
-	local StarterPlayer = game:GetService("StarterPlayer")
-	local TransitionLoadingScreen = require(StarterPlayer.StarterPlayerScripts.Client.Misc.TransitionLoadingScreen)
 	GuiService.TouchControlsEnabled = true
 	
 	--Setting camera
 	cameraModule.travelingCamera()
 
-	--Sprinting
-	local canMove = true
-	UserInputService.InputBegan:Connect(function(input)
-		if canMove then
-			if input.KeyCode == Enum.KeyCode.LeftShift then
-				toggleSprint:Fire(true) -- Sent to animate
-				character.Humanoid.WalkSpeed = 32	
-			end
-		end
-	end)
-	UserInputService.InputEnded:Connect(function(input)
-		if canMove then
-			if input.KeyCode == Enum.KeyCode.LeftShift then
-				character.Humanoid.WalkSpeed = 16
-				toggleSprint:Fire(false) -- Sent to animate
-			end
-		end
-	end)
-
-	
-	--When player touches an event trigger brick when traveling
-	triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
-		cameraModule.travelingEvent(roomInstance)
-		canMove = false
-		character.Humanoid.WalkSpeed = 0
-		triggerEventModule.EventTriggered()
-	end)
-
-	--Tweening and handling for when the player opens a door.
-	local openDoorRemote = travelingRemotes.OpenDoor
-	openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMapLayout)
-		local nextRoom = mapLayout[placeInMapLayout + 1]
-        local nextRoomEntranceDoor = nextRoom.EntranceWall.Door
-        local currentRoomExitDoor = roomInstance.ExitWall.Door
-
-        local tweenEntranceRightDoor = tweenService:Create(nextRoomEntranceDoor.RightDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = nextRoomEntranceDoor.EndpointRight.CFrame})
-		tweenEntranceRightDoor:Play()
-        local tweenLeftDoor = tweenService:Create(nextRoomEntranceDoor.LeftDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = nextRoomEntranceDoor.EndpointLeft.CFrame})
-        tweenLeftDoor:Play()
-
-        local tweenExitRightDoor = tweenService:Create(currentRoomExitDoor.RightDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = currentRoomExitDoor.EndpointRight.CFrame})
-		tweenExitRightDoor:Play()
-        local tweenExitLeftDoor = tweenService:Create(currentRoomExitDoor.LeftDoor, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = currentRoomExitDoor.EndpointLeft.CFrame})
-        tweenExitLeftDoor:Play()
-
-		local prompt = roomInstance.ExitWall.Door.ProxPart.ProximityPrompt
-        prompt.Parent:Destroy()
-		soundEffects.MetalDoorOpening:Play()
-	end)
-
 	gameplayGUI.Enabled = true
 	travelGUI.Enabled = true
-
-	goToCharacterCreator.OnClientEvent:Connect(function()
-		transitionLoadingScreenModule.CreateTransition()
-		characterCreatorModule.goToCharacterCreator()
-		task.wait(2)
-		TransitionLoadingScreen.DestroyTransition()
-		locationPopupModule.displayLocation(location)
-
-	end)
 
 	--Cleaning up GUI from main menu
 	local blackscreenClone = miscGUI:FindFirstChild("BlackScreen")
