@@ -16,18 +16,15 @@ local miniLoadingScreen = miscStorage.UIElements.MiniLoadingScreenGUI
 ---Load the main menu room------------------
 local mainMenuLoader = require(game.StarterPlayer.StarterPlayerScripts.Client.MainMenu.MainMenuLoader)
 mainMenuLoader.loadLobby()
+game.Workspace:WaitForChild("MainMenuRoom")
 
 ---Camera-----------
 local cam = workspace.CurrentCamera
 cam.CameraType = "Scriptable"
 
-local cameraPoints = {
-	mainMenuPos = game.Workspace.MainMenuRoom.CameraPart.Position,
-}
-
 local basePos = game.Workspace.MainMenuRoom.Base.Glass.Position
 
-local pos = cameraPoints.mainMenuPos
+local pos = game.Workspace.MainMenuRoom.CameraPart.Position
 local cameraCFrame = CFrame.new(pos, Vector3.new(basePos.X, basePos.Y, basePos.Z ))
 cam.FieldOfView = 70
 cam.CFrame = cameraCFrame

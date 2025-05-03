@@ -42,7 +42,9 @@ function module.CreateTransition()
     transitionLoadingClone.Parent = playerGUI.MiscGUI
     local transparencyTween = tweenService:Create(transitionLoadingClone, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Transparency = 0})
     transparencyTween:Play()
-    transparencyTween.completed:Wait()
+    local fovTweenIn = tweenService:Create(camera, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {FieldOfView = 30})
+    fovTweenIn:Play()
+    transparencyTween.Completed:Wait()
 end
 
 function module.DestroyTransition()

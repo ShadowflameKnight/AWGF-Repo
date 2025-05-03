@@ -24,4 +24,18 @@ function module.newSlotName(player, slotName)
 	return result	
 end
 
+function module.getIsDead(player)
+	local profile = module.Profiles[player]
+	if not profile then return end
+	return profile.Data.isDead
+end
+
+--Used to get profile from a server script. Used in GameplayServer. Highly inadvised to return this result to client via remote.
+function module.getProfile(player) 
+	local profile = module.Profiles[player]
+	if not profile then return end
+	return profile
+end
+
 return module
+

@@ -48,10 +48,19 @@ local locationPopupModule = require(script.Parent.Parent.Misc.LocationPopup)
 -- Fired to Animate script in player scripts to toggle their respective animation.
 local toggleSprint = travelingRemotes.ToggleSprint
 
---Sprinting
-local canMove = true
+--Sprinting and toggling movement
+local canMove = character:WaitForChild("CanMove")
+
+canMove:GetPropertyChangedSignal("Value"):Connect(function()
+	if canMove.Value == false then
+		character.Humanoid.WalkSpeed = 0
+	else
+		character.Humanoid.WalkSpeed = 16 -- or whatever the normal speed is
+	end
+end)
+
 UserInputService.InputBegan:Connect(function(input)
-	if canMove then
+	if canMove.Value then
 		if input.KeyCode == Enum.KeyCode.LeftShift then
 			toggleSprint:Fire(true) -- Sent to animate
 			character.Humanoid.WalkSpeed = 32	
@@ -59,7 +68,7 @@ UserInputService.InputBegan:Connect(function(input)
 	end
 end)
 UserInputService.InputEnded:Connect(function(input)
-	if canMove then
+	if canMove.Value then
 		if input.KeyCode == Enum.KeyCode.LeftShift then
 			character.Humanoid.WalkSpeed = 16
 			toggleSprint:Fire(false) -- Sent to animate
@@ -69,12 +78,12 @@ end)
 
 local TransitionLoadingScreen = require(game.StarterPlayer.StarterPlayerScripts.Client.Misc.TransitionLoadingScreen)
 goToCharacterCreator.OnClientEvent:Connect(function()
+	canMove.Value = false
 	transitionLoadingScreenModule.CreateTransition()
 	characterCreatorModule.goToCharacterCreator()
 	task.wait(2)
 	TransitionLoadingScreen.DestroyTransition()
 	locationPopupModule.displayLocation(location)
-
 end)
 
 local module = {}
@@ -83,8 +92,7 @@ local triggerEventRemote = travelingRemotes.TriggerEvent
 --When player touches an event trigger brick when traveling
 triggerEventRemote.OnClientEvent:Connect(function(roomInstance)
 	cameraModule.travelingEvent(roomInstance)
-	canMove = false
-	character.Humanoid.WalkSpeed = 0
+	canMove.Value = false
 	triggerEventModule.EventTriggered()
 end)
 
@@ -110,12 +118,12 @@ openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMa
 	soundEffects.MetalDoorOpening:Play()
 end)
 
-function module.startGameplay(gamemode)
-	print(gamemode)
-	local mapLoadedRemote = travelingRemotes.MapLoaded
+local mapLoadedRemote = travelingRemotes.MapLoaded
 	mapLoadedRemote.OnClientEvent:Connect(function()
 		player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
 	end)
+function module.startGameplay(gamemode)
+	print(gamemode)
 
 	--Change lighting to the specified things under the module script
 	lightingConfig.changeLighting(gamemode)

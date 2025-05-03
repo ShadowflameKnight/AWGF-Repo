@@ -75,6 +75,32 @@ updateSlotData.OnServerInvoke = function(player, instruction, slotNumber, data1,
 	return false --Indicates the process has been successful
 end
 
+local checkSlotName = game.ReplicatedStorage.MainMenu.Remotes.CheckSlotName
+checkSlotName.OnServerInvoke = function(player, slotText, slotNumber)
+	if slotText == "" then 
+		return "Name cannot be blank"
+	end
+end
+
+-------Everything after this is after the player starts a game--------------------
+local gameStartRemote = game.ReplicatedStorage.MainMenu.Remotes.GameStart
+local giveLobbyData = game.ReplicatedStorage.LobbyMenu.Remotes.GiveLobbyData
+gameStartRemote.OnServerInvoke = function(player, slotNumber)
+	local profile = loadProfile(player, slotNumber)
+	local isEmpty = profile.Data.mainMenuData.isEmpty
+	local completedTutorial = true
+	--local completedTutorial = profile.Data.achievements.completedTutorial
+	giveLobbyData:FireClient(player, isEmpty, completedTutorial) -- Send to lobbyGUI
+	print(profile.Data.mainMenuData.saveName)
+end
+
+local newSlotNameRemote = game.ReplicatedStorage.LobbyMenu.Remotes.NewSlotName
+newSlotNameRemote.OnServerInvoke = function(player, slotName)
+	local result = Manager.newSlotName(player, slotName)
+	return result
+end
+
+---Basic ProfileService Setup
 local giveSlotAmount = mainMenuFolder.Remotes.GiveSlotAmount
 local function PlayerAdded(player: Player)
 	if player == nil then
@@ -96,30 +122,3 @@ Players.PlayerRemoving:Connect(function(player: Player)
 	profile:Release()
 end)
 
-local checkSlotName = game.ReplicatedStorage.MainMenu.Remotes.CheckSlotName
-checkSlotName.OnServerInvoke = function(player, slotText, slotNumber)
-	if slotText == "" then 
-		return "Name cannot be blank"
-	end
-end
-
--------Everything after this is after the player starts a game--------------------
-local gameStartRemote = game.ReplicatedStorage.MainMenu.Remotes.GameStart
-local giveLobbyData = game.ReplicatedStorage.LobbyMenu.Remotes.GiveLobbyData
-gameStartRemote.OnServerInvoke = function(player, slotNumber)
-	local profile = loadProfile(player, slotNumber)
-	local isEmpty = profile.Data.mainMenuData.isEmpty
-	local completedTutorial = true
-	--local completedTutorial = profile.Data.achievements.completedTutorial
-	giveLobbyData:FireClient(player, isEmpty, completedTutorial) -- Send to lobbyGUI
-	print(profile.Data.mainMenuData.saveName)
-end
-
---Getting 1 layer player data------------
-
-
-local newSlotNameRemote = game.ReplicatedStorage.LobbyMenu.Remotes.NewSlotName
-newSlotNameRemote.OnServerInvoke = function(player, slotName)
-	local result = Manager.newSlotName(player, slotName)
-	return result
-end
