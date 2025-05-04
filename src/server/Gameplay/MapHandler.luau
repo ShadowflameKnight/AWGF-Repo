@@ -1,3 +1,4 @@
+local StarterGui = game:GetService("StarterGui")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
 local miscRemotes = replicatedStorage.Misc.Remotes
@@ -133,6 +134,7 @@ function rooms.loadCrystal()
     changeLightingRemote:FireAllClients("Crystal")
     local startingRoomClone = mapsFolder.Crystal.StartingRoom:Clone()
     startingRoomClone.Parent = workspace
+    workspace:WaitForChild(startingRoomClone)
 
     local prompt = startingRoomClone.ProximityPart.ProximityPrompt
     prompt.Triggered:Connect(function(player)
@@ -144,18 +146,12 @@ function rooms.loadCrystal()
 end
 
 function rooms.loadLobby()
-    --[[
+    
     print("lobby")
-    local startingRoomClone = lobbyStarterRoom:Clone()
+    local startingRoomClone = mapsFolder.Lobby.StartingRoom:Clone()
     startingRoomClone.Parent = workspace
+    workspace:WaitForChild(startingRoomClone)
 
-    local prompt = startingRoomClone.ProximityPart.ProximityPrompt
-
-    prompt.Triggered:Connect(function(player)
-        goToCharacterCreatorRemote:FireClient(player)
-        teleportBackToSpawnBox:FireClient(player)
-    end)
-]]
 end
 
 return rooms

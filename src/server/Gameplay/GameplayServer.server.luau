@@ -8,11 +8,7 @@ local mapLoaded = travelingRemotes.MapLoaded
 
 local dataManager = require(script.Parent.Parent.PlayerData.Manager)
 
-loadLobbyRemote.OnServerEvent:Connect(function() -- From CharacterCreator
-	mapHandler.loadLobby()
-	game.workspace:WaitForChild("StartingRoom")
-	mapLoaded:FireAllClients()
-end)
+
 
 startExpeditionRemote.OnServerEvent:Connect(function(player, map) --From LobbyGUI
 		--mapHandler.loadMap("Testing")
@@ -26,7 +22,10 @@ startExpeditionRemote.OnServerEvent:Connect(function(player, map) --From LobbyGU
 			mapLoaded:FireAllClients()
 		end
 
-		
+		loadLobbyRemote.OnServerEvent:Connect(function() -- From CharacterCreator
+			mapHandler.loadLobby()
+			mapLoaded:FireClient(player)
+		end)
 		
 	
 end)
