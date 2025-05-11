@@ -8,24 +8,20 @@ local mapLoaded = travelingRemotes.MapLoaded
 
 local dataManager = require(script.Parent.Parent.PlayerData.Manager)
 
+startExpeditionRemote.OnServerEvent:Connect(function(player) --From LobbyGUI. Activated only once ever, despite the remote's name
+	--mapHandler.loadMap("Testing")
+	--mapLoaded:FireClient(player)
+	local profile = dataManager.getProfile(player)
+	local isDead = profile.Data.isDead
+	print(isDead)
+	if isDead then
+		mapHandler.loadCrystal()
+		game.workspace:WaitForChild("StartingRoom")
+		mapLoaded:FireAllClients("Crystal")
+	end
 
-
-startExpeditionRemote.OnServerEvent:Connect(function(player, map) --From LobbyGUI
-		--mapHandler.loadMap("Testing")
-		--mapLoaded:FireClient(player)
-		local profile = dataManager.getProfile(player)
-		local isDead = profile.Data.isDead
-		print(isDead)
-		if isDead then
-			mapHandler.loadCrystal()
-			game.workspace:WaitForChild("StartingRoom")
-			mapLoaded:FireAllClients()
-		end
-
-		loadLobbyRemote.OnServerEvent:Connect(function() -- From CharacterCreator
-			mapHandler.loadLobby()
-			mapLoaded:FireClient(player)
-		end)
-		
-	
+	loadLobbyRemote.OnServerEvent:Connect(function() -- From CharacterCreator
+		mapHandler.loadLobby()
+		mapLoaded:FireClient(player, "Lobby")
+	end)
 end)

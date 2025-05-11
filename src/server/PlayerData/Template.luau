@@ -12,7 +12,14 @@ local module = {
 		completedTutorial = false
 	},
 	isDead = true,
-	location = ""
+	location = "",
+
+	--Character Creator stuff
+	characterCreatorSettings = {
+		character = "",
+		saveCharacterToNextLife = false
+	}
+	
 }
 
 return module

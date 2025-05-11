@@ -11,7 +11,10 @@ local locations =
 {
     ["The Crystal"] ={
         ["Description"] = "..."
-    }
+    },
+    ["The Facility"] = {
+        ["Description"] = "Suffocating air, mindless turning of cogs, friendly Faces - you're Home."
+    },
 }
 
 function locations.displayLocation(location)
@@ -45,9 +48,9 @@ function locations.displayLocation(location)
     locationFrameClone.Parent = playerGUI.MiscGUI
     
     --Tween in
-    local barSizeTween = tweenService:Create(frameBar, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 0, 1)})
+    local barSizeTween = tweenService:Create(frameBar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 0, 1)})
     barSizeTween:Play()
-    local backgroundTween = tweenService:Create(background, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Transparency = 0})
+    local backgroundTween = tweenService:Create(background, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Transparency = 0})
     backgroundTween:Play()
     backgroundTween.Completed:Wait()
     local locationNameTween = tweenService:Create(locationName, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Position = UDim2.new(0.5,0,0,0)})

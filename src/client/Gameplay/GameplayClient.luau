@@ -5,13 +5,13 @@ local startGameplayBindable = replicatedStorage.LobbyMenu.Remotes.StartExpeditio
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local GuiService = game:GetService("GuiService")
+local tweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local character = player.Character
 local mouse = player:GetMouse()
-
-local tweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
 
 local replicatedStorage = game.ReplicatedStorage
 local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
@@ -42,7 +42,6 @@ local goToCharacterCreator = replicatedStorage.LobbyMenu.Remotes.GoToCharacterCr
 local transitionLoadingScreenModule = require(script.Parent.Parent.Misc.TransitionLoadingScreen)
 local characterCreatorModule = require(script.Parent.Parent.Lobby.CharacterCreator)
 
-local location = ""
 local locationPopupModule = require(script.Parent.Parent.Misc.LocationPopup)
 
 -- Fired to Animate script in player scripts to toggle their respective animation.
@@ -60,7 +59,7 @@ canMove:GetPropertyChangedSignal("Value"):Connect(function()
 end)
 
 UserInputService.InputBegan:Connect(function(input)
-	if canMove.Value then
+	if canMove.Value == true then
 		if input.KeyCode == Enum.KeyCode.LeftShift then
 			toggleSprint:Fire(true) -- Sent to animate
 			character.Humanoid.WalkSpeed = 32	
@@ -68,7 +67,7 @@ UserInputService.InputBegan:Connect(function(input)
 	end
 end)
 UserInputService.InputEnded:Connect(function(input)
-	if canMove.Value then
+	if canMove.Value == true then
 		if input.KeyCode == Enum.KeyCode.LeftShift then
 			character.Humanoid.WalkSpeed = 16
 			toggleSprint:Fire(false) -- Sent to animate
@@ -83,7 +82,6 @@ goToCharacterCreator.OnClientEvent:Connect(function()
 	characterCreatorModule.goToCharacterCreator()
 	task.wait(2)
 	TransitionLoadingScreen.DestroyTransition()
-	locationPopupModule.displayLocation(location)
 end)
 
 local module = {}
@@ -118,27 +116,31 @@ openDoorRemote.OnClientEvent:Connect(function(mapLayout, roomInstance, placeInMa
 	soundEffects.MetalDoorOpening:Play()
 end)
 
---Teleport to the StartingRoom's spawnbrick when the map has loaded
-local mapLoadedRemote = travelingRemotes.MapLoaded
-mapLoadedRemote.OnClientEvent:Connect(function()
-	player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
+local locationPopupPartTouched = replicatedStorage.Gameplay.Traveling.Remotes.LocationPopupPartTouched
+locationPopupPartTouched.OnClientEvent:Connect(function(location)
+	locationPopupModule.displayLocation(location)
 end)
 
+--Teleport back to spawnbox for loading sequences
 local spawnBox = game.workspace:WaitForChild("Spawnbox")
 local teleportBackToSpawnBox = travelingRemotes.TeleportBackToSpawnBox
 teleportBackToSpawnBox.OnClientEvent:Connect(function()
 	player.Character.HumanoidRootPart.CFrame = spawnBox.SpawnLocation.CFrame
 end)
 
-function module.startGameplay(map)
-	print(map)
-
-	--Re enabling mobile controls
-	local GuiService = game:GetService("GuiService") 
-	GuiService.TouchControlsEnabled = true
-	
-	--Setting camera
+--Teleport to the StartingRoom's spawnbrick when the map has loaded
+local mapLoadedRemote = travelingRemotes.MapLoaded
+mapLoadedRemote.OnClientEvent:Connect(function(map)
+	lightingConfig.changeLighting(map)
+	workspace:WaitForChild("StartingRoom")
+	player.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("StartingRoom").SpawnBrick.CFrame
 	cameraModule.travelingCamera()
+	canMove.Value = true
+end)
+
+function module.startGameplay()
+	--Re enabling mobile controls
+	GuiService.TouchControlsEnabled = true
 
 	gameplayGUI.Enabled = true
 	travelGUI.Enabled = true

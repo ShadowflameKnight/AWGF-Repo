@@ -39,7 +39,7 @@ local module = {
 
     Lobby = {
         Lighting = {
-            Ambient = Color3.fromRGB(0,0,0),
+            Ambient = Color3.fromRGB(255,255,255),
             Brightness = 0,
             ShadowSoftness = 0,
             OutdoorAmbient = Color3.fromRGB(0,0,0),

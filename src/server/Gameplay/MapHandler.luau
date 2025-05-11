@@ -1,4 +1,5 @@
 local StarterGui = game:GetService("StarterGui")
+local players = game.Players
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local travelingRemotes = game.ReplicatedStorage.Gameplay.Traveling.Remotes
 local miscRemotes = replicatedStorage.Misc.Remotes
@@ -9,6 +10,7 @@ local mapsFolder = game.ServerStorage.Maps
 local goToCharacterCreatorRemote = replicatedStorage.LobbyMenu.Remotes.GoToCharacterCreator
 local teleportBackToSpawnBox = travelingRemotes.TeleportBackToSpawnBox
 local changeLightingRemote = miscRemotes.ChangeLighting
+local locationPopupPartTouched = replicatedStorage.Gameplay.Traveling.Remotes.LocationPopupPartTouched
 
 local tweenService = game:GetService("TweenService")
 
@@ -133,8 +135,7 @@ function rooms.loadCrystal()
     print("Crystal")
     changeLightingRemote:FireAllClients("Crystal")
     local startingRoomClone = mapsFolder.Crystal.StartingRoom:Clone()
-    startingRoomClone.Parent = workspace
-    workspace:WaitForChild(startingRoomClone)
+    startingRoomClone.Parent = game.workspace
 
     local prompt = startingRoomClone.ProximityPart.ProximityPrompt
     prompt.Triggered:Connect(function(player)
@@ -146,12 +147,20 @@ function rooms.loadCrystal()
 end
 
 function rooms.loadLobby()
-    
     print("lobby")
     local startingRoomClone = mapsFolder.Lobby.StartingRoom:Clone()
-    startingRoomClone.Parent = workspace
-    workspace:WaitForChild(startingRoomClone)
+    startingRoomClone.Parent = game.workspace
+    game.workspace:WaitForChild("StartingRoom")
 
+    local hasTouched = false
+    local locationPopupPart = startingRoomClone.LocationPopupPart
+    locationPopupPart.Touched:Connect(function(otherPart)
+        if not locationPopupPart:IsDescendantOf(game) then return end -- safety check
+        
+        locationPopupPart.CanTouch = false
+        locationPopupPartTouched:FireAllClients(locationPopupPart.LocationName.Value)
+        locationPopupPart:Destroy()
+    end)
 end
 
 return rooms

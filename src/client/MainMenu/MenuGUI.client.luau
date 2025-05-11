@@ -91,7 +91,7 @@ local function gameStart(slotNumber)
 	textPopUpModule.popUpText(game.Players.LocalPlayer, "Game Start")
 	
 	local gameStartRemote = mainMenuStorage.Remotes.GameStart
-	gameStartRemote:InvokeServer(slotNumber) --Sent to nowhere?
+	gameStartRemote:InvokeServer(slotNumber) --Sent to Data server script
 
 	local menuGUI = playerGUI:FindFirstChild("MenuGUI")
 	if not menuGUI then
@@ -104,6 +104,7 @@ local function gameStart(slotNumber)
 	end
 end
 
+--This is activated once the player joins.
 giveSlotsAmount.OnClientEvent:Connect(function(slotsOwned)
 	for i = 1, slotsOwned do
 		local slotClone = saveSlot:Clone()

@@ -30,8 +30,6 @@ local isEmpty, completedTutorial = giveLobbyDataRemote.OnClientEvent:Wait()
 for i, sound in ipairs(music:GetChildren()) do
 	sound:Stop()
 end
-local music = game.SoundService.Music
-music.Volume = 1
 
 local blur = game.Lighting.Blur
 blur.Enabled = false
@@ -61,8 +59,8 @@ else
 
 end
 ]]----------
-startExpeditionRemote:FireServer("Lobby") -- Sent to GameplayServer
-startExpeditionBindable:Fire("Lobby")
+startExpeditionRemote:FireServer() -- Sent to GameplayServer
+startExpeditionBindable:Fire()
 local gameplayClient = require(script.Parent.Parent.Gameplay.GameplayClient)
-gameplayClient.startGameplay("Lobby")
+gameplayClient.startGameplay()
 

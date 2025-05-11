@@ -1,10 +1,9 @@
 local SoundService = game.SoundService
-local workspace = game:GetService("workspace")
 local runService = game:GetService("RunService")
 local tweenService = game:GetService("TweenService")
 
 local character = game.Players.LocalPlayer.Character
-local camera = workspace.CurrentCamera
+local camera = game.workspace.CurrentCamera
 
 local player = game.Players.LocalPlayer
 --Accesses Local player to access the client's camera
@@ -14,7 +13,7 @@ local module = {}
 
 local cameraPart = Instance.new("Part")
 cameraPart.Name = "CameraPart"
-cameraPart.Parent = workspace
+cameraPart.Parent = game.workspace
 cameraPart.Anchored = true
 cameraPart.CanCollide = false
 cameraPart.Transparency = 1
@@ -80,8 +79,8 @@ end
 function module.goToCharacterCreator()
 	runService:UnbindFromRenderStep("TravelingCamera")
 
-	--camera.CFrame = workspace.CustomizeRoom.CameraPart.CFrame
-	camera.CFrame = CFrame.lookAt(workspace.CustomizeRoom.CameraPart.Position, Vector3.new(167.418, 157.49, -94.394))
+	--camera.CFrame = game.workspace.CustomizeRoom.CameraPart.CFrame
+	camera.CFrame = CFrame.lookAt(game.workspace.CustomizeRoom.CameraPart.Position, Vector3.new(167.418, 157.49, -94.394))
 end
 
 return module

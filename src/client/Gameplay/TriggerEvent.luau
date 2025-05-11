@@ -56,7 +56,6 @@ function module.EventTriggered()
     musicTween:Play()
     backgroundFadeTween:Play()
     effectDisplayTween:Play()
-
     
     for i, viewport in eventGUI:GetChildren() do
         if viewport:IsA("ViewportFrame") then

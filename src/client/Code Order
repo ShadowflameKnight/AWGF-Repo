@@ -1,0 +1,15 @@
+This documents the order of which code goes in order to initialize a player's save. Kind of like pseudocode
+
+1. Loading screen is replaced with the custom one.
+2. Whenever a player is added, send a remote function called giveSlotAmount from the Data server script to MenuGUI client script.
+3. MenuGUI will create however many slots giveSlotAmount told the player has. Starts at 1. In the future, bonus slots will be paid.
+    a. When I mean looping, I mean it will send a remote function called fetchSlotInformation, which will fetch the slot information required to display for each slot in the main menu.
+    b. This information includes name, gameplay time, or whether it is empty or not.
+4. Slot buttons get functionality, including the ability to delete, rename, etc.
+5. When clicked to enter a slot, activate gameStart local function, which activates a gameStartRemote, which gives relevant data to LobbyGUI, which has been put on :Wait() until it is given data from Data server script's remote function giveLobbyData
+    a. Relevant data includes isEmpty and CompletedTutorial
+        i. If it is empty, then engage in the process of creating a new slot. A modular function is used under LobbyInitializer
+6. use startExpedition remote function to let GameplayServer know that the game is starting
+    a. Will probably need to be renamed to something more appropriate like gamestart, but theres a lot of things called gamestart so that remains to be seen.
+7. GameplayServer will get the profile of the user.
+8. GameplayServer will plop the player wherever is appropriate given where they were last, including maps, lobby, tutorial, etc.

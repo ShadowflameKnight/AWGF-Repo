@@ -52,5 +52,8 @@ function module.newSlot()
 	return
 end
 
+function module.initializeLobby()
+	local lobby = game.workspace:WaitForChild("StartingRoom")
+end
 
 return module
